@@ -1,0 +1,19 @@
+{
+  "name": "discoverage-server",
+  "version": "1.0.0",
+  "description": "Server for discoverage",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jtremback/discoverage-server.git"
+  },
+  "author": "jehan.tremback@gmail.com <you@example.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jtremback/discoverage-server/issues"
+  },
+  "homepage": "https://github.com/jtremback/discoverage-server"
+}
