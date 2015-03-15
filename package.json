@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/jtremback/discoverage-server/issues"
   },
-  "homepage": "https://github.com/jtremback/discoverage-server"
+  "homepage": "https://github.com/jtremback/discoverage-server",
+  "dependencies": {
+    "express": "^4.12.2"
+  }
 }
