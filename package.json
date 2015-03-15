@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/jtremback/discoverage-server",
   "dependencies": {
-    "express": "^4.12.2"
+    "express": "^4.12.2",
+    "forever": "^0.14.1",
+    "mongoose": "^3.8.25"
   }
 }
