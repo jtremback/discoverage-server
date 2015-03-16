@@ -1,4 +1,5 @@
 var animals = require('./controllers/animals.js')
+var users = require('./controllers/users.js')
 
 module.exports = function (app) {
   app.get('/', function (req, res) {
@@ -6,11 +7,12 @@ module.exports = function (app) {
   })
 
   app.get('/animals', animals.all)
-  app.get('/animals/:id', animals.id)
   // app.get('/animals/near', animals.near)
   // app.get('/animals/user/:id', animals.user)
+  app.get('/animals/:id', animals.id)
 
-  // app.get('/users/:id')
+  app.get('/users', users.all)
+  app.get('/users/:id', users.id)
 
   // app.get('/bananapicks/:id')
   // app.get('/bananapicks/user/:id')
