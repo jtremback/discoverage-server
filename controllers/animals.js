@@ -46,7 +46,7 @@ exports.save = function (req, res, next) {
 }
 
 exports.near = function (req, res, next) {
-  var distance = req.query.dist
+  var distance = req.query.dist / 6371
   var query = Animal.find({
       'location': {
         $near: [req.query.lon, req.query.lat],

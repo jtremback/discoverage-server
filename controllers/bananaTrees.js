@@ -32,10 +32,11 @@ exports.save = function (req, res, next) {
 }
 
 exports.near = function (req, res, next) {
+  var distance = req.query.dist / 6371
   var query = Model.find({
       'location': {
         $near: [req.query.lon, req.query.lat],
-        $maxDistance: req.query.dist
+        $maxDistance: distance
       }
     }
   )
