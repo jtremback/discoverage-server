@@ -6,13 +6,16 @@ module.exports = function (app) {
     res.end('hello whirled')
   })
 
-  app.get('/animals', animals.all)
+  app.get('/animals', animals.getAll)
   // app.get('/animals/near', animals.near)
   // app.get('/animals/user/:id', animals.user)
-  app.get('/animals/:id', animals.id)
+  app.get('/animals/:id', animals.getById)
 
-  app.get('/users', users.all)
-  app.get('/users/:id', users.id)
+  app.get('/users', users.getAll)
+  app.get('/users/:id', users.getById)
+  app.post('/users', users.save)
+
+  // app.post('/users/:id', users.update)
 
   // app.get('/bananapicks/:id')
   // app.get('/bananapicks/user/:id')
