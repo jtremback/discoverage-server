@@ -9,6 +9,7 @@ Animal.findOneAndRemove({ _id: '550632455b692503008e659f' })
     name: 'Charizard',
     sprite: '1_charizard',
     health: 5,
+    location: [35.3343, 121.2223],
     owner: '550648a8fa6b8286095dd5ce'
   })
   charizard.save()

@@ -23,10 +23,11 @@ function tests () { // this gives it a chance to create the fake docs
     _id: '550632455b692503008e659f',
     name: 'Charizard',
     sprite: '1_charizard',
+    location: [35.3343, 121.2223],
     health: 5
   }
 
-  var animalProps = ['_id', 'name', 'health', 'sprite']
+  var animalProps = ['_id', 'name', 'health', 'sprite', 'location']
 
   test('get all animals', function (t) {
     request(app)
