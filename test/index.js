@@ -99,6 +99,23 @@ function tests () { // this gives it a chance to create the fake docs
     })
   })
 
+  test('get animals nearby', function (t) {
+    request(app)
+    .get('/animals/near?lon=37&lat=122&dist=10')
+    .expect(200)
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+      var resAnimal = _.pick(res.body, animalProps)
+
+      t.deepEqual(charizard, resAnimal)
+
+      t.equal('550648a8fa6b8286095dd5ce', res.body[0].owner._id)
+
+      t.end()
+    })
+  })
+
 
 
 
@@ -317,6 +334,20 @@ function tests () { // this gives it a chance to create the fake docs
   })
 
 
+  test('get bananaTrees nearby', function (t) {
+    request(app)
+    .get('/bananaTrees/near?lon=37&lat=122&dist=10')
+    .expect(200)
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+      var resBananaTree = _.pick(res.body, bananaTreeProps)
+
+      t.deepEqual(resBananaTree, theBananaTree)
+
+      t.end()
+    })
+  })
 
   test('end', function (t) {
     t.end()

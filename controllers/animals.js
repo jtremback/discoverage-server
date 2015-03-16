@@ -44,3 +44,19 @@ exports.save = function (req, res, next) {
     })
   })
 }
+
+exports.near = function (req, res, next) {
+  var distance = req.query.dist
+  var query = Animal.find({
+      'location': {
+        $near: [req.query.lon, req.query.lat],
+        $maxDistance: distance
+      }
+    }
+  )
+  .populate('owner')
+  .exec(function (err, animals) {
+    if (err) { return next(err) }
+    return res.json(animals)
+  })
+}

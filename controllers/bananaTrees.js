@@ -30,3 +30,17 @@ exports.save = function (req, res, next) {
     return res.json(bananaTree)
   })
 }
+
+exports.near = function (req, res, next) {
+  var query = Model.find({
+      'location': {
+        $near: [req.query.lon, req.query.lat],
+        $maxDistance: req.query.dist
+      }
+    }
+  )
+  .exec(function (err, docs) {
+    if (err) { return next(err) }
+    return res.json(docs)
+  })
+}

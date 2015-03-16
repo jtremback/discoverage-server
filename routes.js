@@ -8,9 +8,9 @@ module.exports = function (app) {
     res.end('hello whirled')
   })
 
-  app.get('/animals', animals.getAll)
-  // app.get('/animals/near', animals.near)
   // app.get('/animals/user/:id', animals.user)
+  app.get('/animals', animals.getAll)
+  app.get('/animals/near', animals.near)
   app.get('/animals/:id', animals.getById)
   app.post('/animals', animals.save)
 
@@ -25,9 +25,7 @@ module.exports = function (app) {
   app.post('/bananapicks', bananaPicks.save)
 
   app.get('/bananatrees', bananaTrees.getAll)
+  app.get('/bananatrees/near', bananaTrees.near)
   app.get('/bananatrees/:id', bananaTrees.getById)
   app.post('/bananatrees', bananaTrees.save)
-  // app.get('/bananatrees/near', function (req, res) {
-
-  // })
 }

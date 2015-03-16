@@ -6,7 +6,8 @@
   "scripts": {
     "watch": "MONGOLAB_URI=mongodb://localhost/discoverage PORT=4242 nodemon index.js",
     "test": "MONGOLAB_URI=mongodb://localhost/discoverage-test PORT=4242 node test/ | tap-colorize -",
-    "watch-test": "MONGOLAB_URI=mongodb://localhost/discoverage-test PORT=4242 nodemon test/ | tap-colorize -"
+    "watch-test": "MONGOLAB_URI=mongodb://localhost/discoverage-test PORT=4242 nodemon test/ | tap-colorize -",
+    "debug-test": "MONGOLAB_URI=mongodb://localhost/discoverage-test PORT=4242 forever -c \"node --debug-brk\" test/"
   },
   "repository": {
     "type": "git",
