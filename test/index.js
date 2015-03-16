@@ -8,7 +8,16 @@ var BananaTree = mongoose.model('BananaTree')
 var request = require('supertest')
 var _ = require('lodash')
 
-setTimeout(function () { // this gives it a chance to create the fake docs
+mongoose.connection.on('open', function(){
+  mongoose.connection.db.executeDbCommand(
+    { dropDatabase: 1 },
+    function(err, result) {
+      setTimeout(tests, 100)
+    }
+  )
+})
+
+function tests () { // this gives it a chance to create the fake docs
 
   var charizard = {
     _id: '550632455b692503008e659f',
@@ -22,6 +31,7 @@ setTimeout(function () { // this gives it a chance to create the fake docs
   test('get all animals', function (t) {
     request(app)
     .get('/animals')
+    .expect(200)
     .end(function(err, res){
       t.error(err)
       console.log('RES', res.body)
@@ -38,6 +48,7 @@ setTimeout(function () { // this gives it a chance to create the fake docs
   test('get animal by id', function (t) {
     request(app)
     .get('/animals/550632455b692503008e659f')
+    .expect(200)
     .end(function(err, res){
       t.error(err)
       console.log('RES', res.body)
@@ -55,25 +66,32 @@ setTimeout(function () { // this gives it a chance to create the fake docs
     var animal = {
       name: 'Squirtle',
       sprite: '1_squirtle',
-      health: 3
+      health: 3,
+      owner: '550648a8fa6b8286095dd5ce'
     }
 
     request(app)
     .post('/animals')
     .send(animal)
+    .expect(200)
     .end(function(err, res){
       t.error(err)
       console.log('RES', res.body)
 
-      var resAnimal = _.omit(_.pick(res.body, animalProps), '_id')
-      t.deepEqual(animal, resAnimal)
+      function filter (animal) {
+        return _.omit(_.pick(animal, animalProps), ['_id', 'owner'])
+      }
+
+      var resAnimal = filter(res.body)
+      t.deepEqual(filter(animal), filter(res.body))
+      t.equal('550648a8fa6b8286095dd5ce', res.body.owner._id)
 
       Animal.findOne({ name: 'Squirtle' })
       .exec(function (err, found) {
         console.log('FOUND', found)
 
-        var foundAnimal = _.omit(_.pick(res.body, animalProps), '_id')
-        t.deepEqual(animal, foundAnimal)
+        var foundAnimal = filter(found)
+        t.deepEqual(filter(animal), filter(res.body))
 
         t.end()
       })
@@ -95,6 +113,7 @@ setTimeout(function () { // this gives it a chance to create the fake docs
   test('get all users', function (t) {
     request(app)
     .get('/users')
+    .expect(200)
     .end(function(err, res){
       t.error(err)
       console.log('RES', res.body)
@@ -109,6 +128,7 @@ setTimeout(function () { // this gives it a chance to create the fake docs
   test('get user by id', function (t) {
     request(app)
     .get('/users/550648a8fa6b8286095dd5ce')
+    .expect(200)
     .end(function(err, res){
       t.error(err)
       console.log('RES', res.body)
@@ -130,6 +150,7 @@ setTimeout(function () { // this gives it a chance to create the fake docs
     request(app)
     .post('/users')
     .send(_.omit(user, 'bananaCount'))
+    .expect(200)
     .end(function(err, res){
       t.error(err)
       console.log('RES', res.body)
@@ -154,14 +175,15 @@ setTimeout(function () { // this gives it a chance to create the fake docs
 
 
   var theBananaPick = {
-    timestamp: '1341234'
+    timestamp: 1426485627563
   }
 
-  var bananaPickProps = ['bananaTree', 'picker', 'timestamp']
+  var bananaPickProps = ['timestamp']
 
   test('get all bananaPicks', function (t) {
     request(app)
     .get('/bananapicks')
+    .expect(200)
     .end(function(err, res){
       t.error(err)
       console.log('RES', res.body)
@@ -175,7 +197,8 @@ setTimeout(function () { // this gives it a chance to create the fake docs
 
   test('get bananaPick by id', function (t) {
     request(app)
-    .get('/bananapicks/550648a8fa6b8286095dd5ce')
+    .get('/bananapicks/5399a1ae13a2d700003bded8')
+    .expect(200)
     .end(function(err, res){
       t.error(err)
       console.log('RES', res.body)
@@ -189,27 +212,34 @@ setTimeout(function () { // this gives it a chance to create the fake docs
 
   test('save new bananaPick', function (t) {
     var bananaPick = {
-      name: 'aditya',
-      email: 'adit99@gmail.com',
-      bananaPickCount: 0
+      bananaTree: '5399a1ae13a2d700003bded8',
+      timestamp: 1426485625563,
+      picker: '550648a8fa6b8286095dd5ce'
     }
 
     request(app)
-    .post('/bananapicks')
-    .send(_.omit(bananaPick, 'bananaPickCount'))
+    .post('/bananaPicks')
+    .send(bananaPick)
+    .expect(200)
     .end(function(err, res){
       t.error(err)
       console.log('RES', res.body)
 
-      var resBananaPick = _.pick(res.body, bananaPickProps)
-      t.deepEqual(bananaPick, resBananaPick)
+      function filter (bananaPick) {
+        return _.omit(_.pick(bananaPick, bananaPickProps), ['_id', 'picker', 'bananaTree'])
+      }
 
-      BananaPick.findOne({ timestamp: '1341234' })
+      var resBananaPick = filter(res.body)
+      t.deepEqual(filter(bananaPick), filter(res.body))
+      t.equal('550648a8fa6b8286095dd5ce', res.body.picker._id)
+      t.equal('5399a1ae13a2d700003bded8', res.body.bananaTree._id)
+
+      BananaPick.findOne({ timestamp: 1426485625563 })
       .exec(function (err, found) {
         console.log('FOUND', found)
 
-        var foundBananaPick = _.pick(found, bananaPickProps)
-        t.deepEqual(bananaPick, foundBananaPick)
+        var foundBananaPick = filter(found)
+        t.deepEqual(filter(bananaPick), filter(res.body))
 
         t.end()
       })
@@ -230,6 +260,7 @@ setTimeout(function () { // this gives it a chance to create the fake docs
   test('get all bananaTrees', function (t) {
     request(app)
     .get('/bananatrees')
+    .expect(200)
     .end(function(err, res){
       t.error(err)
       console.log('RES', res.body)
@@ -244,6 +275,7 @@ setTimeout(function () { // this gives it a chance to create the fake docs
   test('get bananaTree by id', function (t) {
     request(app)
     .get('/bananatrees/550648a8fa6b8286095dd5ce')
+    .expect(200)
     .end(function(err, res){
       t.error(err)
       console.log('RES', res.body)
@@ -265,6 +297,7 @@ setTimeout(function () { // this gives it a chance to create the fake docs
     request(app)
     .post('/bananatrees')
     .send(_.omit(bananaTree, 'bananaTreeCount'))
+    .expect(200)
     .end(function(err, res){
       t.error(err)
       console.log('RES', res.body)
@@ -290,28 +323,4 @@ setTimeout(function () { // this gives it a chance to create the fake docs
     t.end()
     process.exit()
   })
-
-  process.stdin.resume();//so the program will not close instantly
-
-  function exitHandler(options, err) {
-      if (options.cleanup) console.log('clean');
-      if (err) console.log(err.stack);
-      mongoose.connection.db.executeDbCommand(
-        { dropDatabase: 1 },
-        function(err, result) {
-          if (err) { throw err }
-          process.exit();
-        }
-      )
-  }
-
-  //do something when app is closing
-  process.on('exit', exitHandler.bind(null,{cleanup:true}));
-
-  //catches ctrl+c event
-  process.on('SIGINT', exitHandler.bind(null, {exit:true}));
-
-  //catches uncaught exceptions
-  process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
-
-}, 100)
+}

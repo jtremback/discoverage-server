@@ -1,5 +1,7 @@
 var animals = require('./controllers/animals.js')
 var users = require('./controllers/users.js')
+var bananaPicks = require('./controllers/bananaPicks.js')
+var bananaTrees = require('./controllers/bananaTrees.js')
 
 module.exports = function (app) {
   app.get('/', function (req, res) {
@@ -18,10 +20,13 @@ module.exports = function (app) {
 
   // app.post('/users/:id', users.update)
 
-  // app.get('/bananapicks/:id')
-  // app.get('/bananapicks/user/:id')
+  app.get('/bananapicks', bananaPicks.getAll)
+  app.get('/bananapicks/:id', bananaPicks.getById)
+  app.post('/bananapicks', bananaPicks.save)
 
-  // app.get('/bananatrees/:id')
+  app.get('/bananatrees', bananaTrees.getAll)
+  app.get('/bananatrees/:id', bananaTrees.getById)
+  app.post('/bananatrees', bananaTrees.save)
   // app.get('/bananatrees/near', function (req, res) {
 
   // })

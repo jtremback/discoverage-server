@@ -35,7 +35,11 @@ exports.getById = function (req, res, next) {
 exports.save = function (req, res, next) {
   var animal = new Animal(req.body)
   animal.save(function (err, animal) {
-    if (err) { return next(err) }
-    return res.json(animal)
+    Animal.findOne({ _id: animal._id })
+    .populate('owner')
+    .exec(function (err, animal) {
+      if (err) { return next(err) }
+      return res.json(animal)
+    })
   })
 }
