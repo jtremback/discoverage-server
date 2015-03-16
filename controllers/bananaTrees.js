@@ -2,11 +2,11 @@ var mongoose = require('mongoose')
 var BananaTree = mongoose.model('BananaTree')
 
 // Fake data
-BananaTree.findOneAndRemove({ _id: '550648a8fa6b8286095ed5ce' })
+BananaTree.findOneAndRemove({ _id: '5399a1ae13a2d700003bded8' })
 .exec(function (err) {
   var theBananaTree = new BananaTree({
     _id: '5399a1ae13a2d700003bded8',
-    location: [37.777777, 122.222222]
+    location: [ 37.77777, 122.223333 ]
   })
   theBananaTree.save()
 })

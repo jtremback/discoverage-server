@@ -6,7 +6,7 @@ BananaPick.findOneAndRemove({ _id: '5399a1ae13a2d700003bded8' })
 .exec(function (err) {
   var theBananaPick = new BananaPick({
     _id: '5399a1ae13a2d700003bded8',
-    bananaTree: '5399a1ae13a2d700003bded8',
+    bananaTree: '550648a8fa6b8286095ed5ce',
     timestamp: '1426485627563',
     picker: '550648a8fa6b8286095dd5ce'
   })

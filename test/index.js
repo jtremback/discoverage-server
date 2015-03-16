@@ -252,10 +252,10 @@ function tests () { // this gives it a chance to create the fake docs
 
 
   var theBananaTree = {
-    location: [37.77777, 122.223333]
+    location: [ 37.77777, 122.223333 ]
   }
 
-  var bananaTreeProps = ['bananaTree', 'picker', 'timestamp']
+  var bananaTreeProps = ['location']
 
   test('get all bananaTrees', function (t) {
     request(app)
@@ -274,7 +274,7 @@ function tests () { // this gives it a chance to create the fake docs
 
   test('get bananaTree by id', function (t) {
     request(app)
-    .get('/bananatrees/550648a8fa6b8286095dd5ce')
+    .get('/bananatrees/5399a1ae13a2d700003bded8')
     .expect(200)
     .end(function(err, res){
       t.error(err)
@@ -289,9 +289,7 @@ function tests () { // this gives it a chance to create the fake docs
 
   test('save new bananaTree', function (t) {
     var bananaTree = {
-      name: 'aditya',
-      email: 'adit99@gmail.com',
-      bananaTreeCount: 0
+      location: [34.444, 124.4444]
     }
 
     request(app)
@@ -305,12 +303,12 @@ function tests () { // this gives it a chance to create the fake docs
       var resBananaTree = _.pick(res.body, bananaTreeProps)
       t.deepEqual(bananaTree, resBananaTree)
 
-      BananaTree.findOne({ name: 'aditya' })
+      BananaTree.findOne({ location: [34.444, 124.4444] })
       .exec(function (err, found) {
         console.log('FOUND', found)
 
         var foundBananaTree = _.pick(found, bananaTreeProps)
-        t.deepEqual(bananaTree, foundBananaTree)
+        t.deepEqual(JSON.stringify(bananaTree), JSON.stringify(foundBananaTree))
 
         t.end()
       })
