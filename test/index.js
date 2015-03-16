@@ -3,6 +3,8 @@ var app = require('../app.js').app
 var mongoose = require('../app.js').mongoose
 var User = mongoose.model('User')
 var Animal = mongoose.model('Animal')
+var BananaPick = mongoose.model('BananaPick')
+var BananaTree = mongoose.model('BananaTree')
 var request = require('supertest')
 var _ = require('lodash')
 
@@ -15,7 +17,7 @@ setTimeout(function () { // this gives it a chance to create the fake docs
     health: 5
   }
 
-  var animalPick = ['_id', 'name', 'health', 'sprite']
+  var animalProps = ['_id', 'name', 'health', 'sprite']
 
   test('get all animals', function (t) {
     request(app)
@@ -23,7 +25,7 @@ setTimeout(function () { // this gives it a chance to create the fake docs
     .end(function(err, res){
       t.error(err)
       console.log('RES', res.body)
-      var resAnimal = _.pick(res.body[0], animalPick)
+      var resAnimal = _.pick(res.body[0], animalProps)
 
       t.deepEqual(charizard, resAnimal)
 
@@ -39,7 +41,7 @@ setTimeout(function () { // this gives it a chance to create the fake docs
     .end(function(err, res){
       t.error(err)
       console.log('RES', res.body)
-      var resAnimal = _.pick(res.body, animalPick)
+      var resAnimal = _.pick(res.body, animalProps)
 
       t.deepEqual(charizard, resAnimal)
 
@@ -63,14 +65,14 @@ setTimeout(function () { // this gives it a chance to create the fake docs
       t.error(err)
       console.log('RES', res.body)
 
-      var resAnimal = _.omit(_.pick(res.body, animalPick), '_id')
+      var resAnimal = _.omit(_.pick(res.body, animalProps), '_id')
       t.deepEqual(animal, resAnimal)
 
       Animal.findOne({ name: 'Squirtle' })
       .exec(function (err, found) {
         console.log('FOUND', found)
 
-        var foundAnimal = _.omit(_.pick(res.body, animalPick), '_id')
+        var foundAnimal = _.omit(_.pick(res.body, animalProps), '_id')
         t.deepEqual(animal, foundAnimal)
 
         t.end()
@@ -88,7 +90,7 @@ setTimeout(function () { // this gives it a chance to create the fake docs
     bananaCount: 5
   }
 
-  var userPick = ['name', 'email', 'bananaCount']
+  var userProps = ['name', 'email', 'bananaCount']
 
   test('get all users', function (t) {
     request(app)
@@ -96,7 +98,7 @@ setTimeout(function () { // this gives it a chance to create the fake docs
     .end(function(err, res){
       t.error(err)
       console.log('RES', res.body)
-      var resUser = _.pick(res.body[0], userPick)
+      var resUser = _.pick(res.body[0], userProps)
 
       t.deepEqual(jehan, resUser)
 
@@ -110,7 +112,7 @@ setTimeout(function () { // this gives it a chance to create the fake docs
     .end(function(err, res){
       t.error(err)
       console.log('RES', res.body)
-      var resUser = _.pick(res.body, userPick)
+      var resUser = _.pick(res.body, userProps)
 
       t.deepEqual(jehan, resUser)
 
@@ -127,19 +129,19 @@ setTimeout(function () { // this gives it a chance to create the fake docs
 
     request(app)
     .post('/users')
-    .send(user)
+    .send(_.omit(user, 'bananaCount'))
     .end(function(err, res){
       t.error(err)
       console.log('RES', res.body)
 
-      var resUser = _.pick(res.body, userPick)
+      var resUser = _.pick(res.body, userProps)
       t.deepEqual(user, resUser)
 
       User.findOne({ name: 'aditya' })
       .exec(function (err, found) {
         console.log('FOUND', found)
 
-        var foundUser = _.pick(found, userPick)
+        var foundUser = _.pick(found, userProps)
         t.deepEqual(user, foundUser)
 
         t.end()
@@ -147,24 +149,169 @@ setTimeout(function () { // this gives it a chance to create the fake docs
     })
   })
 
-  // test('update user', function (t) {
-  //   request(app)
-  //   .post('/user')
-  //   .send({})
-  //   .end(function(err, res){
-  //     t.error(err)
-  //     t.end()
-  //   })
-  // })
+
+
+
+
+  var theBananaPick = {
+    timestamp: '1341234'
+  }
+
+  var bananaPickProps = ['bananaTree', 'picker', 'timestamp']
+
+  test('get all bananaPicks', function (t) {
+    request(app)
+    .get('/bananapicks')
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+      var resBananaPick = _.pick(res.body[0], bananaPickProps)
+
+      t.deepEqual(theBananaPick, resBananaPick)
+
+      t.end()
+    })
+  })
+
+  test('get bananaPick by id', function (t) {
+    request(app)
+    .get('/bananapicks/550648a8fa6b8286095dd5ce')
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+      var resBananaPick = _.pick(res.body, bananaPickProps)
+
+      t.deepEqual(theBananaPick, resBananaPick)
+
+      t.end()
+    });
+  })
+
+  test('save new bananaPick', function (t) {
+    var bananaPick = {
+      name: 'aditya',
+      email: 'adit99@gmail.com',
+      bananaPickCount: 0
+    }
+
+    request(app)
+    .post('/bananapicks')
+    .send(_.omit(bananaPick, 'bananaPickCount'))
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+
+      var resBananaPick = _.pick(res.body, bananaPickProps)
+      t.deepEqual(bananaPick, resBananaPick)
+
+      BananaPick.findOne({ timestamp: '1341234' })
+      .exec(function (err, found) {
+        console.log('FOUND', found)
+
+        var foundBananaPick = _.pick(found, bananaPickProps)
+        t.deepEqual(bananaPick, foundBananaPick)
+
+        t.end()
+      })
+    })
+  })
+
+
+
+
+
+
+  var theBananaTree = {
+    location: [37.77777, 122.223333]
+  }
+
+  var bananaTreeProps = ['bananaTree', 'picker', 'timestamp']
+
+  test('get all bananaTrees', function (t) {
+    request(app)
+    .get('/bananatrees')
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+      var resBananaTree = _.pick(res.body[0], bananaTreeProps)
+
+      t.deepEqual(theBananaTree, resBananaTree)
+
+      t.end()
+    })
+  })
+
+  test('get bananaTree by id', function (t) {
+    request(app)
+    .get('/bananatrees/550648a8fa6b8286095dd5ce')
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+      var resBananaTree = _.pick(res.body, bananaTreeProps)
+
+      t.deepEqual(theBananaTree, resBananaTree)
+
+      t.end()
+    });
+  })
+
+  test('save new bananaTree', function (t) {
+    var bananaTree = {
+      name: 'aditya',
+      email: 'adit99@gmail.com',
+      bananaTreeCount: 0
+    }
+
+    request(app)
+    .post('/bananatrees')
+    .send(_.omit(bananaTree, 'bananaTreeCount'))
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+
+      var resBananaTree = _.pick(res.body, bananaTreeProps)
+      t.deepEqual(bananaTree, resBananaTree)
+
+      BananaTree.findOne({ name: 'aditya' })
+      .exec(function (err, found) {
+        console.log('FOUND', found)
+
+        var foundBananaTree = _.pick(found, bananaTreeProps)
+        t.deepEqual(bananaTree, foundBananaTree)
+
+        t.end()
+      })
+    })
+  })
+
+
 
   test('end', function (t) {
-    mongoose.connection.db.executeDbCommand(
-      { dropDatabase: 1 },
-      function(err, result) {
-        if (err) { throw err }
-        t.end()
-        process.exit()
-      }
-    )
+    t.end()
+    process.exit()
   })
+
+  process.stdin.resume();//so the program will not close instantly
+
+  function exitHandler(options, err) {
+      if (options.cleanup) console.log('clean');
+      if (err) console.log(err.stack);
+      mongoose.connection.db.executeDbCommand(
+        { dropDatabase: 1 },
+        function(err, result) {
+          if (err) { throw err }
+          process.exit();
+        }
+      )
+  }
+
+  //do something when app is closing
+  process.on('exit', exitHandler.bind(null,{cleanup:true}));
+
+  //catches ctrl+c event
+  process.on('SIGINT', exitHandler.bind(null, {exit:true}));
+
+  //catches uncaught exceptions
+  process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
+
 }, 100)

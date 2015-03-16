@@ -15,7 +15,7 @@ var app = express()
 app.use(bodyParser.json())
 
 app.use(function(req, res, next){
-  console.log('%s %s', req.method, req.url);
+  console.log('%s %s %s', req.method, req.url, JSON.stringify(req.body));
   next();
 });
 
