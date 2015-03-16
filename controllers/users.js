@@ -7,7 +7,8 @@ User.findOneAndRemove({ _id: '550648a8fa6b8286095dd5ce' })
   var jehan = new User({
     _id: '550648a8fa6b8286095dd5ce',
     name: 'jehan',
-    email: 'jehan.tremback@gmail.com'
+    email: 'jehan.tremback@gmail.com',
+    bananaCount: 5
   })
   jehan.save()
 })
@@ -28,7 +29,7 @@ exports.save = function (req, res, next) {
   var user = new User(req.body)
   user.save(function (err, user) {
     if (err) { return next(err) }
-    res.json(user)
+    return res.json(user)
   })
 }
 

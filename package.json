@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "watch": "MONGOLAB_URI=mongodb://localhost/discoverage PORT=4242 nodemon index.js",
-    "test": "MONGOLAB_URI=mongodb://localhost/discoverage-test PORT=4242 node test/",
-    "watch-test": "MONGOLAB_URI=mongodb://localhost/discoverage-test PORT=4242 nodemon test/"
+    "test": "MONGOLAB_URI=mongodb://localhost/discoverage-test PORT=4242 node test/ | tap-difflet",
+    "watch-test": "MONGOLAB_URI=mongodb://localhost/discoverage-test PORT=4242 nodemon test/ | tap-difflet"
   },
   "repository": {
     "type": "git",
@@ -28,6 +28,7 @@
     "lodash": "^3.5.0",
     "nodemon": "^1.3.7",
     "supertest": "^0.15.0",
+    "tap-difflet": "^0.3.0",
     "tape": "^3.5.0"
   }
 }

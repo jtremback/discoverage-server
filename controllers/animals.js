@@ -14,18 +14,28 @@ Animal.findOneAndRemove({ _id: '550632455b692503008e659f' })
   charizard.save()
 })
 
-exports.getAll = function (req, res) {
+exports.getAll = function (req, res, next) {
   Animal.find({})
   .populate('owner')
   .exec(function (err, animals) {
+    if (err) { return next(err) }
     return res.json(animals)
   })
 }
 
-exports.getById = function (req, res) {
+exports.getById = function (req, res, next) {
   Animal.findOne({ _id: req.params.id })
   .populate('owner')
   .exec(function (err, animal) {
+    if (err) { return next(err) }
+    return res.json(animal)
+  })
+}
+
+exports.save = function (req, res, next) {
+  var animal = new Animal(req.body)
+  animal.save(function (err, animal) {
+    if (err) { return next(err) }
     return res.json(animal)
   })
 }

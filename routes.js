@@ -10,6 +10,7 @@ module.exports = function (app) {
   // app.get('/animals/near', animals.near)
   // app.get('/animals/user/:id', animals.user)
   app.get('/animals/:id', animals.getById)
+  app.post('/animals', animals.save)
 
   app.get('/users', users.getAll)
   app.get('/users/:id', users.getById)
