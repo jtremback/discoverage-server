@@ -11,13 +11,14 @@ var _ = require('lodash')
 mongoose.connection.on('open', function(){
   mongoose.connection.db.executeDbCommand(
     { dropDatabase: 1 },
-    function(err, result) {
-      setTimeout(tests, 100)
+    function() {
+      // this gives it a chance to create the fake docs
+      setTimeout(tests, 500)
     }
   )
 })
 
-function tests () { // this gives it a chance to create the fake docs
+function tests () {
 
   var charizard = {
     _id: '550632455b692503008e659f',
@@ -83,7 +84,6 @@ function tests () { // this gives it a chance to create the fake docs
         return _.omit(_.pick(animal, animalProps), ['_id', 'owner'])
       }
 
-      var resAnimal = filter(res.body)
       t.deepEqual(filter(animal), filter(res.body))
       t.equal('550648a8fa6b8286095dd5ce', res.body.owner._id)
 
@@ -91,7 +91,6 @@ function tests () { // this gives it a chance to create the fake docs
       .exec(function (err, found) {
         console.log('FOUND', found)
 
-        var foundAnimal = filter(found)
         t.deepEqual(filter(animal), filter(res.body))
 
         t.end()
@@ -101,12 +100,12 @@ function tests () { // this gives it a chance to create the fake docs
 
   test('get animals nearby', function (t) {
     request(app)
-    .get('/animals/near?lon=37&lat=122&dist=10')
+    .get('/animals/near?lon=37&lat=122&dist=1000000')
     .expect(200)
     .end(function(err, res){
       t.error(err)
       console.log('RES', res.body)
-      var resAnimal = _.pick(res.body, animalProps)
+      var resAnimal = _.pick(res.body[0], animalProps)
 
       t.deepEqual(charizard, resAnimal)
 
@@ -247,7 +246,6 @@ function tests () { // this gives it a chance to create the fake docs
         return _.omit(_.pick(bananaPick, bananaPickProps), ['_id', 'picker', 'bananaTree'])
       }
 
-      var resBananaPick = filter(res.body)
       t.deepEqual(filter(bananaPick), filter(res.body))
       t.equal('550648a8fa6b8286095dd5ce', res.body.picker._id)
       t.equal('5399a1ae13a2d700003bded8', res.body.bananaTree._id)
@@ -256,7 +254,6 @@ function tests () { // this gives it a chance to create the fake docs
       .exec(function (err, found) {
         console.log('FOUND', found)
 
-        var foundBananaPick = filter(found)
         t.deepEqual(filter(bananaPick), filter(res.body))
 
         t.end()
@@ -305,6 +302,21 @@ function tests () { // this gives it a chance to create the fake docs
     });
   })
 
+  test('get bananaTrees nearby', function (t) {
+    request(app)
+    .get('/bananatrees/near?lon=37&lat=122&dist=1000000')
+    .expect(200)
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+      var resBananaTree = _.pick(res.body[0], bananaTreeProps)
+
+      t.deepEqual(resBananaTree, theBananaTree)
+
+      t.end()
+    })
+  })
+
   test('save new bananaTree', function (t) {
     var bananaTree = {
       location: [34.444, 124.4444]
@@ -334,20 +346,6 @@ function tests () { // this gives it a chance to create the fake docs
   })
 
 
-  test('get bananaTrees nearby', function (t) {
-    request(app)
-    .get('/bananaTrees/near?lon=37&lat=122&dist=10')
-    .expect(200)
-    .end(function(err, res){
-      t.error(err)
-      console.log('RES', res.body)
-      var resBananaTree = _.pick(res.body, bananaTreeProps)
-
-      t.deepEqual(resBananaTree, theBananaTree)
-
-      t.end()
-    })
-  })
 
   test('end', function (t) {
     t.end()
