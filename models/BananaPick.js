@@ -2,8 +2,8 @@ var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 
 var bananaPickSchema = new Schema({
-  _bananaTree: { type: Schema.Types.ObjectId, ref: 'BananaTree' },
-  _user: { type: Schema.Types.ObjectId, ref: 'User' },
+  bananaTree: { type: Schema.Types.ObjectId, ref: 'BananaTree' },
+  picker: { type: Schema.Types.ObjectId, ref: 'User' },
   timestamp: {  }
 })
 

@@ -18,5 +18,7 @@ app.use(function(req, res, next){
 
 routes(app)
 
+console.log(process.env)
+
 app.listen(4242)
 console.log("listening on 4242")

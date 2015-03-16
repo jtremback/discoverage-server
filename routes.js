@@ -14,7 +14,6 @@ module.exports = function (app) {
   })
 
   app.get('/users/:id')
-  app.get('/users/top')
 
   app.get('/bananapicks/:id')
   app.get('/bananapicks/user/:id')
