@@ -3,8 +3,7 @@ var mongoose = require('mongoose')
 var routes = require('./routes.js')
 
 var app = express()
-mongoose.connect(process.MONGOLAB_URI)
-console.log(MONGOLAB_URI)
+mongoose.connect(process.env.MONGOLAB_URI)
 
 // Bootstrap models
 require('./models/Animal.js')
