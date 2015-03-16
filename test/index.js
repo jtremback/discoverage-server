@@ -73,7 +73,7 @@ function tests () {
     }
 
     request(app)
-    .post('/animals')
+    .post('/animal')
     .send(animal)
     .expect(200)
     .end(function(err, res){
@@ -165,7 +165,7 @@ function tests () {
     }
 
     request(app)
-    .post('/users')
+    .post('/user')
     .send(_.omit(user, 'bananaCount'))
     .expect(200)
     .end(function(err, res){
@@ -235,7 +235,7 @@ function tests () {
     }
 
     request(app)
-    .post('/bananaPicks')
+    .post('/bananaPick')
     .send(bananaPick)
     .expect(200)
     .end(function(err, res){
@@ -323,7 +323,7 @@ function tests () {
     }
 
     request(app)
-    .post('/bananatrees')
+    .post('/bananatree')
     .send(_.omit(bananaTree, 'bananaTreeCount'))
     .expect(200)
     .end(function(err, res){

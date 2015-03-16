@@ -12,20 +12,20 @@ module.exports = function (app) {
   app.get('/animals', animals.getAll)
   app.get('/animals/near', animals.near)
   app.get('/animals/:id', animals.getById)
-  app.post('/animals', animals.save)
+  app.post('/animal', animals.save)
 
   app.get('/users', users.getAll)
   app.get('/users/:id', users.getById)
-  app.post('/users', users.save)
+  app.post('/user', users.save)
 
   // app.post('/users/:id', users.update)
 
   app.get('/bananapicks', bananaPicks.getAll)
   app.get('/bananapicks/:id', bananaPicks.getById)
-  app.post('/bananapicks', bananaPicks.save)
+  app.post('/bananapick', bananaPicks.save)
 
   app.get('/bananatrees', bananaTrees.getAll)
   app.get('/bananatrees/near', bananaTrees.near)
   app.get('/bananatrees/:id', bananaTrees.getById)
-  app.post('/bananatrees', bananaTrees.save)
+  app.post('/bananatree', bananaTrees.save)
 }
