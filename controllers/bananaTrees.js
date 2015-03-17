@@ -12,7 +12,7 @@ BananaTree.findOneAndRemove({ _id: '5399a1ae13a2d700003bded8' })
 })
 
 exports.getAll = function (req, res) {
-  BananaTree.find()
+  BananaTree.find(req.query)
   .exec(function (err, bananaTrees) {
     return res.json(bananaTrees)
   })

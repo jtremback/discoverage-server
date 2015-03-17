@@ -3,7 +3,7 @@ var BananaPick = mongoose.model('BananaPick')
 
 // Fake data
 BananaPick.findOneAndRemove({ _id: '5399a1ae13a2d700003bded8' })
-.exec(function (err) {
+.exec(function () {
   var theBananaPick = new BananaPick({
     _id: '5399a1ae13a2d700003bded8',
     bananaTree: '550648a8fa6b8286095ed5ce',

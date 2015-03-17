@@ -19,6 +19,123 @@ mongoose.connection.on('open', function(){
 })
 
 function tests () {
+  var jehan = {
+    name: 'jehan',
+    email: 'jehan.tremback@gmail.com',
+    bananaCount: 5
+  }
+
+  var userProps = ['name', 'email', 'bananaCount']
+  var token
+
+  test('login', function (t) {
+    request(app)
+    .post('/login')
+    .send({ email: 'jehan.tremback@gmail.com', password: 'pokemon' })
+    .expect(200)
+    .end(function (err, res) {
+      t.error(err)
+      console.log('RES', res.body)
+      token = res.body
+      t.end()
+    })
+  })
+
+  test('get all users', function (t) {
+    request(app)
+    .get('/users')
+    .expect(200)
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+      var resUser = _.pick(res.body[0], userProps)
+
+      t.deepEqual(jehan, resUser)
+
+      t.end()
+    })
+  })
+
+  test('get user by id', function (t) {
+    request(app)
+    .get('/users/550648a8fa6b8286095dd5ce')
+    .expect(200)
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+      var resUser = _.pick(res.body, userProps)
+
+      t.deepEqual(jehan, resUser)
+
+      t.end()
+    });
+  })
+
+  test('save new user', function (t) {
+    var user = {
+      name: 'aditya',
+      email: 'adit99@gmail.com',
+      password: 'pokemon',
+      bananaCount: 0
+    }
+
+    request(app)
+    .post('/user')
+    .send(_.omit(user, 'bananaCount'))
+    .expect(200)
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+
+      t.deepEqual(_.pick(user, userProps), _.pick(res.body, userProps))
+
+      User.findOne({ name: 'aditya' })
+      .exec(function (err, found) {
+        console.log('FOUND', found)
+        t.ok(found)
+        t.deepEqual(_.pick(user, userProps), _.pick(found, userProps))
+
+        t.end()
+      })
+    })
+  })
+
+  test('update user', function (t) {
+    request(app)
+    .post('/user/550648a8fa6b8286095dd5ce?token=' + token)
+    .send({ bananaCount: 9 })
+    .expect(200)
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+      t.equal(9, res.body.bananaCount)
+
+      Animal.findOne({ name: 'jehan' })
+      .exec(function (err, found) {
+        console.log('FOUND', found)
+
+        t.equal(9, res.body.bananaCount)
+
+        t.end()
+      })
+    })
+  })
+
+  test('get all users filtered', function (t) {
+    request(app)
+    .get('/users?name=aditya')
+    .expect(200)
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+      t.equal(res.body.length, 1)
+      t.end()
+    })
+  })
+
+
+
+
 
   var charizard = {
     _id: '550632455b692503008e659f',
@@ -81,43 +198,43 @@ function tests () {
     })
   })
 
-  var squirtle = {
-    name: 'Squirtle',
-    sprite: '1_squirtle',
-    health: 3,
-    owner: '550648a8fa6b8286095dd5ce'
-  }
+  // var squirtle = {
+  //   name: 'Squirtle',
+  //   sprite: '1_squirtle',
+  //   health: 3,
+  //   owner: '550648a8fa6b8286095dd5ce'
+  // }
 
-  test('save new animal', function (t) {
-    request(app)
-    .post('/animal')
-    .send(squirtle)
-    .expect(200)
-    .end(function(err, res){
-      t.error(err)
-      console.log('RES', res.body)
+  // test('save new animal', function (t) {
+  //   request(app)
+  //   .post('/animal')
+  //   .send(squirtle)
+  //   .expect(200)
+  //   .end(function(err, res){
+  //     t.error(err)
+  //     console.log('RES', res.body)
 
-      function filter (animal) {
-        return _.omit(_.pick(animal, animalProps), ['_id', 'owner'])
-      }
+  //     function filter (animal) {
+  //       return _.omit(_.pick(animal, animalProps), ['_id', 'owner'])
+  //     }
 
-      t.deepEqual(filter(squirtle), filter(res.body))
-      t.equal('550648a8fa6b8286095dd5ce', res.body.owner._id)
+  //     t.deepEqual(filter(squirtle), filter(res.body))
+  //     t.equal('550648a8fa6b8286095dd5ce', res.body.owner._id)
 
-      Animal.findOne({ name: 'Squirtle' })
-      .exec(function (err, found) {
-        console.log('FOUND', found)
+  //     Animal.findOne({ name: 'Squirtle' })
+  //     .exec(function (err, found) {
+  //       console.log('FOUND', found)
 
-        t.deepEqual(filter(squirtle), filter(res.body))
+  //       t.deepEqual(filter(squirtle), filter(res.body))
 
-        t.end()
-      })
-    })
-  })
+  //       t.end()
+  //     })
+  //   })
+  // })
 
   test('update animal', function (t) {
     request(app)
-    .post('/animal/550632455b692503008e659f')
+    .post('/animal/550632455b692503008e659f?token=' + token)
     .send({ health: 9 })
     .expect(200)
     .end(function(err, res){
@@ -138,7 +255,7 @@ function tests () {
 
   test('get all animals filtered', function (t) {
     request(app)
-    .get('/animals?name=Squirtle')
+    .get('/animals?owner=550648a8fa6b8286095dd5ce')
     .expect(200)
     .end(function(err, res){
       t.error(err)
@@ -151,108 +268,6 @@ function tests () {
 
 
 
-
-
-  var jehan = {
-    name: 'jehan',
-    email: 'jehan.tremback@gmail.com',
-    bananaCount: 5
-  }
-
-  var userProps = ['name', 'email', 'bananaCount']
-
-  test('get all users', function (t) {
-    request(app)
-    .get('/users')
-    .expect(200)
-    .end(function(err, res){
-      t.error(err)
-      console.log('RES', res.body)
-      var resUser = _.pick(res.body[0], userProps)
-
-      t.deepEqual(jehan, resUser)
-
-      t.end()
-    })
-  })
-
-  test('get user by id', function (t) {
-    request(app)
-    .get('/users/550648a8fa6b8286095dd5ce')
-    .expect(200)
-    .end(function(err, res){
-      t.error(err)
-      console.log('RES', res.body)
-      var resUser = _.pick(res.body, userProps)
-
-      t.deepEqual(jehan, resUser)
-
-      t.end()
-    });
-  })
-
-  test('save new user', function (t) {
-    var user = {
-      name: 'aditya',
-      email: 'adit99@gmail.com',
-      bananaCount: 0
-    }
-
-    request(app)
-    .post('/user')
-    .send(_.omit(user, 'bananaCount'))
-    .expect(200)
-    .end(function(err, res){
-      t.error(err)
-      console.log('RES', res.body)
-
-      var resUser = _.pick(res.body, userProps)
-      t.deepEqual(user, resUser)
-
-      User.findOne({ name: 'aditya' })
-      .exec(function (err, found) {
-        console.log('FOUND', found)
-
-        var foundUser = _.pick(found, userProps)
-        t.deepEqual(user, foundUser)
-
-        t.end()
-      })
-    })
-  })
-
-  test('update user', function (t) {
-    request(app)
-    .post('/user/550648a8fa6b8286095dd5ce')
-    .send({ bananaCount: 9 })
-    .expect(200)
-    .end(function(err, res){
-      t.error(err)
-      console.log('RES', res.body)
-      t.equal(9, res.body.bananaCount)
-
-      Animal.findOne({ name: 'jehan' })
-      .exec(function (err, found) {
-        console.log('FOUND', found)
-
-        t.equal(9, res.body.bananaCount)
-
-        t.end()
-      })
-    })
-  })
-
-  test('get all users filtered', function (t) {
-    request(app)
-    .get('/users?name=aditya')
-    .expect(200)
-    .end(function(err, res){
-      t.error(err)
-      console.log('RES', res.body)
-      t.equal(res.body.length, 1)
-      t.end()
-    })
-  })
 
 
 
@@ -342,7 +357,6 @@ function tests () {
 
 
 
-
   var theBananaTree = {
     location: [ 37.77777, 122.223333 ]
   }
@@ -394,33 +408,33 @@ function tests () {
     })
   })
 
-  test('save new bananaTree', function (t) {
-    var bananaTree = {
-      location: [34.444, 124.4444]
-    }
+  // test('save new bananaTree', function (t) {
+  //   var bananaTree = {
+  //     location: [34.444, 124.4444]
+  //   }
 
-    request(app)
-    .post('/bananatree')
-    .send(_.omit(bananaTree, 'bananaTreeCount'))
-    .expect(200)
-    .end(function(err, res){
-      t.error(err)
-      console.log('RES', res.body)
+  //   request(app)
+  //   .post('/bananatree')
+  //   .send(_.omit(bananaTree, 'bananaTreeCount'))
+  //   .expect(200)
+  //   .end(function(err, res){
+  //     t.error(err)
+  //     console.log('RES', res.body)
 
-      var resBananaTree = _.pick(res.body, bananaTreeProps)
-      t.deepEqual(bananaTree, resBananaTree)
+  //     var resBananaTree = _.pick(res.body, bananaTreeProps)
+  //     t.deepEqual(bananaTree, resBananaTree)
 
-      BananaTree.findOne({ location: [34.444, 124.4444] })
-      .exec(function (err, found) {
-        console.log('FOUND', found)
+  //     BananaTree.findOne({ location: [34.444, 124.4444] })
+  //     .exec(function (err, found) {
+  //       console.log('FOUND', found)
 
-        var foundBananaTree = _.pick(found, bananaTreeProps)
-        t.deepEqual(JSON.stringify(bananaTree), JSON.stringify(foundBananaTree))
+  //       var foundBananaTree = _.pick(found, bananaTreeProps)
+  //       t.deepEqual(JSON.stringify(bananaTree), JSON.stringify(foundBananaTree))
 
-        t.end()
-      })
-    })
-  })
+  //       t.end()
+  //     })
+  //   })
+  // })
 
 
   test('end', function (t) {

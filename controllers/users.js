@@ -9,7 +9,8 @@ User.findOneAndRemove({ _id: '550648a8fa6b8286095dd5ce' })
     _id: '550648a8fa6b8286095dd5ce',
     name: 'jehan',
     email: 'jehan.tremback@gmail.com',
-    bananaCount: 5
+    bananaCount: 5,
+    password: 'pokemon'
   })
   jehan.save()
 })
@@ -43,11 +44,39 @@ exports.save = function (req, res, next) {
   })
 }
 
-  // User.update(
-  //   { _id: req.params.id },
-  //   { $set: req.body },
-  //   { upsert: true },
-  //   function (err, user) {
-  //     console.log('OOSER', user)
-  //   }
-  // )
+exports.login = function (req, res, next) {
+  User.findOne({ email: req.body.email })
+  .exec(function (err, user) {
+
+    if (err) { return next(err) }
+    if (!user) { return res.status(401).send('No user with that email.') }
+
+    user.comparePassword(req.body.password, function (err, matches) {
+      if (err) { return next(err) }
+      if (!matches) { return res.status(401).send('Incorrect password.') }
+      var token = parseInt(Math.random() * 10000000000000) + ''
+      user.token = token
+      user.save()
+
+      return res.json(token)
+    })
+  })
+}
+
+exports.auth = function (req, res, next) {
+  User.findOne({ token: req.query.token })
+  .exec(function (err, user) {
+    if (err) { next(err) }
+    if (!user) { return res.status(401).send('Please log in.') }
+    req.user = user
+    next()
+  })
+}
+
+exports.logout = function (req, res, next) {
+  User.findOneAndUpdate({ _id: req.user._id }, { token: '' })
+  .exec(function (err) {
+    if (err) { return next(err) }
+    return res.send('Logged out.')
+  })
+}
