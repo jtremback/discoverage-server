@@ -33,23 +33,15 @@ exports.getById = function (req, res, next) {
   })
 }
 
-exports.save = function (req, res, next) {
-  var animal = new Animal(req.body)
-  animal.save(function (err, animal) {
-    Animal.findOne({ _id: animal._id })
-    .populate('owner')
-    .exec(function (err, animal) {
-      if (err) { return next(err) }
-      return res.json(animal)
-    })
-  })
-}
-
 exports.update = function (req, res, next) {
-  Animal.findOneAndUpdate({ _id: req.params.id }, req.body)
+  if (!req.user) { return res.status(401).send('Please log in.')}
+  Animal.findOneAndUpdate({ _id: req.params.id, owner: req.user._id.toString() }, req.body)
   .populate('owner')
   .exec(function (err, animal) {
     if (err) { return next(err) }
+    if (!animal) {
+      return res.status(403).send('You do not own an animal with that id.')
+    }
     return res.json(animal)
   })
 }

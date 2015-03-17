@@ -28,6 +28,10 @@ exports.getById = function (req, res) {
 }
 
 exports.update = function (req, res, next) {
+  if (!req.user) { return res.status(401).send('Please log in.')}
+  if (req.user._id.toString() !== req.params.id) {
+    return res.status(403).send('You can only modify your own account.')
+  }
   User.findOneAndUpdate({ _id: req.params.id }, req.body)
   .exec(function (err, user) {
     if (err) { return next(err) }

@@ -30,6 +30,10 @@ exports.getById = function (req, res) {
 }
 
 exports.save = function (req, res, next) {
+  if (!req.user) { return res.status(401).send('Please log in.')}
+  if (req.user._id.toString() !== req.body.picker) {
+    return res.status(403).send('You can pick your friends, and you can pick your bananas, but you can\'t pick your friend\'s bananas.')
+  }
   var bananaPick = new BananaPick(req.body)
   bananaPick.save(function (err, bananaPick) {
     BananaPick.findOne({ _id: bananaPick._id })
