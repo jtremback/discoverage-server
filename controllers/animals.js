@@ -3,7 +3,7 @@ var Animal = mongoose.model('Animal')
 
 // Fake data
 Animal.findOneAndRemove({ _id: '550632455b692503008e659f' })
-.exec(function (err) {
+.exec(function () {
   var charizard = new Animal({
     _id: '550632455b692503008e659f',
     name: 'Charizard',
@@ -34,13 +34,13 @@ exports.getById = function (req, res, next) {
 }
 
 exports.update = function (req, res, next) {
-  if (!req.user) { return res.status(401).send('Please log in.')}
+  if (!req.user) { return res.status(401).json({ code: 401, error: 'Please log in.' })}
   Animal.findOneAndUpdate({ _id: req.params.id, owner: req.user._id.toString() }, req.body)
   .populate('owner')
   .exec(function (err, animal) {
     if (err) { return next(err) }
     if (!animal) {
-      return res.status(403).send('You do not own an animal with that id.')
+      return res.status(403).json({ code: 403, error: 'You do not own an animal with that id.' })
     }
     return res.json(animal)
   })

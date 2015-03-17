@@ -28,9 +28,9 @@ exports.getById = function (req, res) {
 }
 
 exports.update = function (req, res, next) {
-  if (!req.user) { return res.status(401).send('Please log in.')}
+  if (!req.user) { return res.status(401).json({ code: 401, error: 'Please log in.' }) }
   if (req.user._id.toString() !== req.params.id) {
-    return res.status(403).send('You can only modify your own account.')
+    return res.status(403).json({ code: 403, error: 'You can only modify your own account.' })
   }
   User.findOneAndUpdate({ _id: req.params.id }, req.body)
   .exec(function (err, user) {
@@ -52,11 +52,11 @@ exports.login = function (req, res, next) {
   .exec(function (err, user) {
 
     if (err) { return next(err) }
-    if (!user) { return res.status(401).send('No user with that email.') }
+    if (!user) { return res.status(401).json({ code: 401, error: 'No user with that email.' }) }
 
     user.comparePassword(req.body.password, function (err, matches) {
       if (err) { return next(err) }
-      if (!matches) { return res.status(401).send('Incorrect password.') }
+      if (!matches) { return res.status(401).json({ code: 401, error: 'Incorrect password.' }) }
       var token = parseInt(Math.random() * 10000000000000) + ''
       user.token = token
       user.save()
@@ -67,11 +67,11 @@ exports.login = function (req, res, next) {
 }
 
 exports.auth = function (req, res, next) {
-  if (!req.query.token) { return res.status(401).send('Please log in.') }
+  if (!req.query.token) { return res.status(401).json({ code: 401, error: 'Please log in.' }) }
   User.findOne({ token: req.query.token })
   .exec(function (err, user) {
     if (err) { next(err) }
-    if (!user) { return res.status(401).send('Please log in.') }
+    if (!user) { return res.status(401).json({ code: 401, error: 'Please log in.' }) }
     req.user = user
     next()
   })

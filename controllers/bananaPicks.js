@@ -30,9 +30,9 @@ exports.getById = function (req, res) {
 }
 
 exports.save = function (req, res, next) {
-  if (!req.user) { return res.status(401).send('Please log in.')}
+  if (!req.user) { return res.status(401).json({ code: 401, error: 'Please log in.' })}
   if (req.user._id.toString() !== req.body.picker) {
-    return res.status(403).send('You can pick your friends, and you can pick your bananas, but you can\'t pick your friend\'s bananas.')
+    return res.status(403).json({ code: 403, error: 'You can pick your friends, and you can pick your bananas, but you can\'t pick your friend\'s bananas.' })
   }
   var bananaPick = new BananaPick(req.body)
   bananaPick.save(function (err, bananaPick) {

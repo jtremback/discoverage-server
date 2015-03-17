@@ -197,40 +197,6 @@ function tests () {
     })
   })
 
-  // var squirtle = {
-  //   name: 'Squirtle',
-  //   sprite: '1_squirtle',
-  //   health: 3,
-  //   owner: '550648a8fa6b8286095dd5ce'
-  // }
-
-  // test('save new animal', function (t) {
-  //   request(app)
-  //   .post('/animal')
-  //   .send(squirtle)
-  //   .expect(200)
-  //   .end(function(err, res){
-  //     t.error(err)
-  //     console.log('RES', res.body)
-
-  //     function filter (animal) {
-  //       return _.omit(_.pick(animal, animalProps), ['_id', 'owner'])
-  //     }
-
-  //     t.deepEqual(filter(squirtle), filter(res.body))
-  //     t.equal('550648a8fa6b8286095dd5ce', res.body.owner._id)
-
-  //     Animal.findOne({ name: 'Squirtle' })
-  //     .exec(function (err, found) {
-  //       console.log('FOUND', found)
-
-  //       t.deepEqual(filter(squirtle), filter(res.body))
-
-  //       t.end()
-  //     })
-  //   })
-  // })
-
   test('update animal', function (t) {
     request(app)
     .post('/animal/550632455b692503008e659f?token=' + token)
@@ -406,35 +372,6 @@ function tests () {
       t.end()
     })
   })
-
-  // test('save new bananaTree', function (t) {
-  //   var bananaTree = {
-  //     location: [34.444, 124.4444]
-  //   }
-
-  //   request(app)
-  //   .post('/bananatree')
-  //   .send(_.omit(bananaTree, 'bananaTreeCount'))
-  //   .expect(200)
-  //   .end(function(err, res){
-  //     t.error(err)
-  //     console.log('RES', res.body)
-
-  //     var resBananaTree = _.pick(res.body, bananaTreeProps)
-  //     t.deepEqual(bananaTree, resBananaTree)
-
-  //     BananaTree.findOne({ location: [34.444, 124.4444] })
-  //     .exec(function (err, found) {
-  //       console.log('FOUND', found)
-
-  //       var foundBananaTree = _.pick(found, bananaTreeProps)
-  //       t.deepEqual(JSON.stringify(bananaTree), JSON.stringify(foundBananaTree))
-
-  //       t.end()
-  //     })
-  //   })
-  // })
-
 
   test('end', function (t) {
     t.end()
