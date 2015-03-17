@@ -4,7 +4,6 @@ var mongoose = require('../app.js').mongoose
 var User = mongoose.model('User')
 var Animal = mongoose.model('Animal')
 var BananaPick = mongoose.model('BananaPick')
-var BananaTree = mongoose.model('BananaTree')
 var request = require('supertest')
 var _ = require('lodash')
 
@@ -36,7 +35,7 @@ function tests () {
     .end(function (err, res) {
       t.error(err)
       console.log('RES', res.body)
-      token = res.body
+      token = res.body.token
       t.end()
     })
   })
@@ -315,7 +314,7 @@ function tests () {
     }
 
     request(app)
-    .post('/bananaPick')
+    .post('/bananaPick?token=' + token)
     .send(bananaPick)
     .expect(200)
     .end(function(err, res){

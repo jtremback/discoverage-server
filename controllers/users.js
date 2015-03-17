@@ -1,6 +1,5 @@
 var mongoose = require('mongoose')
 var User = mongoose.model('User')
-var _ = require('lodash')
 
 // Fake data
 User.findOneAndRemove({ _id: '550648a8fa6b8286095dd5ce' })
@@ -58,12 +57,13 @@ exports.login = function (req, res, next) {
       user.token = token
       user.save()
 
-      return res.json(token)
+      return res.json(user)
     })
   })
 }
 
 exports.auth = function (req, res, next) {
+  if (!req.query.token) { return res.status(401).send('Please log in.') }
   User.findOne({ token: req.query.token })
   .exec(function (err, user) {
     if (err) { next(err) }
