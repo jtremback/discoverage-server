@@ -45,6 +45,15 @@ exports.save = function (req, res, next) {
   })
 }
 
+exports.update = function (req, res, next) {
+  Animal.findOneAndUpdate({ _id: req.params.id }, req.body)
+  .populate('owner')
+  .exec(function (err, animal) {
+    if (err) { return next(err) }
+    return res.json(animal)
+  })
+}
+
 exports.near = function (req, res, next) {
   var distance = req.query.dist / 6371
   Animal.find({

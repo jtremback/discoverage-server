@@ -27,6 +27,14 @@ exports.getById = function (req, res) {
   })
 }
 
+exports.update = function (req, res, next) {
+  User.findOneAndUpdate({ _id: req.params.id }, req.body)
+  .exec(function (err, user) {
+    if (err) { return next(err) }
+    return res.json(user)
+  })
+}
+
 exports.save = function (req, res, next) {
   var user = new User(req.body)
   user.save(function (err, user) {

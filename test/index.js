@@ -115,6 +115,27 @@ function tests () {
     })
   })
 
+  test('update animal', function (t) {
+    request(app)
+    .post('/animal/550632455b692503008e659f')
+    .send({ health: 9 })
+    .expect(200)
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+      t.equal(9, res.body.health)
+
+      Animal.findOne({ name: 'Squirtle' })
+      .exec(function (err, found) {
+        console.log('FOUND', found)
+
+        t.equal(9, res.body.health)
+
+        t.end()
+      })
+    })
+  })
+
   test('get all animals filtered', function (t) {
     request(app)
     .get('/animals?name=Squirtle')
@@ -126,6 +147,9 @@ function tests () {
       t.end()
     })
   })
+
+
+
 
 
 
@@ -191,6 +215,27 @@ function tests () {
 
         var foundUser = _.pick(found, userProps)
         t.deepEqual(user, foundUser)
+
+        t.end()
+      })
+    })
+  })
+
+  test('update user', function (t) {
+    request(app)
+    .post('/user/550648a8fa6b8286095dd5ce')
+    .send({ bananaCount: 9 })
+    .expect(200)
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+      t.equal(9, res.body.bananaCount)
+
+      Animal.findOne({ name: 'jehan' })
+      .exec(function (err, found) {
+        console.log('FOUND', found)
+
+        t.equal(9, res.body.bananaCount)
 
         t.end()
       })
