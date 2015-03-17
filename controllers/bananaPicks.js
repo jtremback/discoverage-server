@@ -14,7 +14,7 @@ BananaPick.findOneAndRemove({ _id: '5399a1ae13a2d700003bded8' })
 })
 
 exports.getAll = function (req, res) {
-  BananaPick.find({})
+  BananaPick.find(req.query)
   .populate(['bananaTree', 'picker'])
   .exec(function (err, bananaPicks) {
     return res.json(bananaPicks)

@@ -64,40 +64,6 @@ function tests () {
     })
   })
 
-  test('save new animal', function (t) {
-    var animal = {
-      name: 'Squirtle',
-      sprite: '1_squirtle',
-      health: 3,
-      owner: '550648a8fa6b8286095dd5ce'
-    }
-
-    request(app)
-    .post('/animal')
-    .send(animal)
-    .expect(200)
-    .end(function(err, res){
-      t.error(err)
-      console.log('RES', res.body)
-
-      function filter (animal) {
-        return _.omit(_.pick(animal, animalProps), ['_id', 'owner'])
-      }
-
-      t.deepEqual(filter(animal), filter(res.body))
-      t.equal('550648a8fa6b8286095dd5ce', res.body.owner._id)
-
-      Animal.findOne({ name: 'Squirtle' })
-      .exec(function (err, found) {
-        console.log('FOUND', found)
-
-        t.deepEqual(filter(animal), filter(res.body))
-
-        t.end()
-      })
-    })
-  })
-
   test('get animals nearby', function (t) {
     request(app)
     .get('/animals/near?lon=37&lat=122&dist=1000000')
@@ -115,7 +81,51 @@ function tests () {
     })
   })
 
+  var squirtle = {
+    name: 'Squirtle',
+    sprite: '1_squirtle',
+    health: 3,
+    owner: '550648a8fa6b8286095dd5ce'
+  }
 
+  test('save new animal', function (t) {
+    request(app)
+    .post('/animal')
+    .send(squirtle)
+    .expect(200)
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+
+      function filter (animal) {
+        return _.omit(_.pick(animal, animalProps), ['_id', 'owner'])
+      }
+
+      t.deepEqual(filter(squirtle), filter(res.body))
+      t.equal('550648a8fa6b8286095dd5ce', res.body.owner._id)
+
+      Animal.findOne({ name: 'Squirtle' })
+      .exec(function (err, found) {
+        console.log('FOUND', found)
+
+        t.deepEqual(filter(squirtle), filter(res.body))
+
+        t.end()
+      })
+    })
+  })
+
+  test('get all animals filtered', function (t) {
+    request(app)
+    .get('/animals?name=Squirtle')
+    .expect(200)
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+      t.equal(res.body.length, 1)
+      t.end()
+    })
+  })
 
 
 
@@ -187,7 +197,17 @@ function tests () {
     })
   })
 
-
+  test('get all users filtered', function (t) {
+    request(app)
+    .get('/users?name=aditya')
+    .expect(200)
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+      t.equal(res.body.length, 1)
+      t.end()
+    })
+  })
 
 
 
@@ -258,6 +278,18 @@ function tests () {
 
         t.end()
       })
+    })
+  })
+
+  test('get all bananaPicks filtered', function (t) {
+    request(app)
+    .get('/bananaPicks?timestamp=1426485625563')
+    .expect(200)
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+      t.equal(res.body.length, 1)
+      t.end()
     })
   })
 
@@ -344,7 +376,6 @@ function tests () {
       })
     })
   })
-
 
 
   test('end', function (t) {

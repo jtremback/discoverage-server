@@ -3,7 +3,7 @@ var BananaTree = mongoose.model('BananaTree')
 
 // Fake data
 BananaTree.findOneAndRemove({ _id: '5399a1ae13a2d700003bded8' })
-.exec(function (err) {
+.exec(function () {
   var theBananaTree = new BananaTree({
     _id: '5399a1ae13a2d700003bded8',
     location: [ 37.77777, 122.223333 ]
@@ -12,7 +12,8 @@ BananaTree.findOneAndRemove({ _id: '5399a1ae13a2d700003bded8' })
 })
 
 exports.getAll = function (req, res) {
-  BananaTree.find({}, function (err, bananaTrees) {
+  BananaTree.find()
+  .exec(function (err, bananaTrees) {
     return res.json(bananaTrees)
   })
 }
@@ -33,7 +34,6 @@ exports.save = function (req, res, next) {
 
 exports.near = function (req, res, next) {
   var distance = parseFloat(req.query.dist) / 6371
-  debugger
   BananaTree.find({
       'location': {
         $near: [req.query.lon, req.query.lat],

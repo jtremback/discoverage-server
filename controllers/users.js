@@ -1,9 +1,10 @@
 var mongoose = require('mongoose')
 var User = mongoose.model('User')
+var _ = require('lodash')
 
 // Fake data
 User.findOneAndRemove({ _id: '550648a8fa6b8286095dd5ce' })
-.exec(function (err) {
+.exec(function () {
   var jehan = new User({
     _id: '550648a8fa6b8286095dd5ce',
     name: 'jehan',
@@ -14,7 +15,8 @@ User.findOneAndRemove({ _id: '550648a8fa6b8286095dd5ce' })
 })
 
 exports.getAll = function (req, res) {
-  User.find({}, function (err, users) {
+  User.find(req.query)
+  .exec(function (err, users) {
     return res.json(users)
   })
 }

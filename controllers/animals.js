@@ -16,7 +16,7 @@ Animal.findOneAndRemove({ _id: '550632455b692503008e659f' })
 })
 
 exports.getAll = function (req, res, next) {
-  Animal.find({})
+  Animal.find(req.query)
   .populate('owner')
   .exec(function (err, animals) {
     if (err) { return next(err) }
@@ -47,7 +47,7 @@ exports.save = function (req, res, next) {
 
 exports.near = function (req, res, next) {
   var distance = req.query.dist / 6371
-  var query = Animal.find({
+  Animal.find({
       'location': {
         $near: [req.query.lon, req.query.lat],
         $maxDistance: distance
