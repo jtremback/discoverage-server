@@ -28,7 +28,7 @@ exports.getById = function (req, res) {
 }
 
 exports.update = function (req, res, next) {
-  if (!req.user) { return res.status(401).json({ code: 401, error: 'Please log in.' }) }
+  if (!req.user) { return res.status(401).json({ code: 401, error: 'Please loge in.' }) }
   if (req.user._id.toString() !== req.params.id) {
     return res.status(403).json({ code: 403, error: 'You can only modify your own account.' })
   }
@@ -67,11 +67,12 @@ exports.login = function (req, res, next) {
 }
 
 exports.auth = function (req, res, next) {
-  if (!req.query.token) { return res.status(401).json({ code: 401, error: 'Please log in.' }) }
-  User.findOne({ token: req.query.token })
+  if (!req.body.token) { return res.status(401).json({ code: 401, error: 'Please log in.' }) }
+  User.findOne({ token: req.body.token })
   .exec(function (err, user) {
     if (err) { next(err) }
     if (!user) { return res.status(401).json({ code: 401, error: 'Please log in.' }) }
+    delete req.body.token
     req.user = user
     next()
   })

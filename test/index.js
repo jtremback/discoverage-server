@@ -101,8 +101,8 @@ function tests () {
 
   test('update user', function (t) {
     request(app)
-    .post('/user/550648a8fa6b8286095dd5ce?token=' + token)
-    .send({ bananaCount: 9 })
+    .post('/user/550648a8fa6b8286095dd5ce')
+    .send({ bananaCount: 9, token: token })
     .expect(200)
     .end(function(err, res){
       t.error(err)
@@ -199,8 +199,8 @@ function tests () {
 
   test('update animal', function (t) {
     request(app)
-    .post('/animal/550632455b692503008e659f?token=' + token)
-    .send({ health: 9 })
+    .post('/animal/550632455b692503008e659f')
+    .send({ health: 9, token: token })
     .expect(200)
     .end(function(err, res){
       t.error(err)
@@ -276,11 +276,12 @@ function tests () {
     var bananaPick = {
       bananaTree: '5399a1ae13a2d700003bded8',
       timestamp: 1426485625563,
-      picker: '550648a8fa6b8286095dd5ce'
+      picker: '550648a8fa6b8286095dd5ce',
+      token: token
     }
 
     request(app)
-    .post('/bananaPick?token=' + token)
+    .post('/bananaPick')
     .send(bananaPick)
     .expect(200)
     .end(function(err, res){
@@ -288,7 +289,7 @@ function tests () {
       console.log('RES', res.body)
 
       function filter (bananaPick) {
-        return _.omit(_.pick(bananaPick, bananaPickProps), ['_id', 'picker', 'bananaTree'])
+        return _.pick(bananaPick, bananaPickProps)
       }
 
       t.deepEqual(filter(bananaPick), filter(res.body))
