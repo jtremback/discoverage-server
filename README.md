@@ -23,6 +23,16 @@
   }
   ```
 
+### logout
+
+- **GET** `/logout?token=8091755178757`
+
+- **Response**
+  ```
+  Logged Out.
+  ```
+
+
 ### get all users
 
 - **GET** `/users`
