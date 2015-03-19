@@ -24,6 +24,14 @@ exports.getById = function (req, res) {
   })
 }
 
+exports.save = function (req, res, next) {
+  var bananaTree = new BananaTree(req.body)
+  bananaTree.save(function (err, bananaTree) {
+    if (err) { return next(err) }
+    return res.json(bananaTree)
+  })
+}
+
 exports.near = function (req, res, next) {
   var distance = parseFloat(req.query.dist) / 6371
   BananaTree.find({

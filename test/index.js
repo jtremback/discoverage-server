@@ -4,6 +4,7 @@ var mongoose = require('../app.js').mongoose
 var User = mongoose.model('User')
 var Animal = mongoose.model('Animal')
 var BananaPick = mongoose.model('BananaPick')
+var BananaTree = mongoose.model('BananaTree')
 var request = require('supertest')
 var _ = require('lodash')
 
@@ -12,7 +13,7 @@ mongoose.connection.on('open', function(){
     { dropDatabase: 1 },
     function() {
       // this gives it a chance to create the fake docs
-      setTimeout(tests, 500)
+      setTimeout(tests, 1000)
     }
   )
 })
@@ -230,6 +231,40 @@ function tests () {
     })
   })
 
+  test('save new animal', function (t) {
+    var animal = {
+      name: 'Squirtle',
+      sprite: '1_squirtle',
+      health: 3,
+      owner: '550648a8fa6b8286095dd5ce'
+    }
+
+    request(app)
+    .post('/animal')
+    .send(animal)
+    .expect(200)
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+
+      function filter (animal) {
+        return _.omit(_.pick(animal, animalProps), ['_id', 'owner'])
+      }
+
+      t.deepEqual(filter(animal), filter(res.body))
+      t.equal('550648a8fa6b8286095dd5ce', res.body.owner._id)
+
+      Animal.findOne({ name: 'Squirtle' })
+      .exec(function (err, found) {
+        console.log('FOUND', found)
+
+        t.deepEqual(filter(animal), filter(res.body))
+
+        t.end()
+      })
+    })
+  })
+
 
 
 
@@ -373,6 +408,35 @@ function tests () {
       t.end()
     })
   })
+
+  test('save new bananaTree', function (t) {
+    var bananaTree = {
+      location: [34.444, 124.4444]
+    }
+
+    request(app)
+    .post('/bananatree')
+    .send(_.omit(bananaTree, 'bananaTreeCount'))
+    .expect(200)
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+
+      var resBananaTree = _.pick(res.body, bananaTreeProps)
+      t.deepEqual(bananaTree, resBananaTree)
+
+      BananaTree.findOne({ location: [34.444, 124.4444] })
+      .exec(function (err, found) {
+        console.log('FOUND', found)
+
+        var foundBananaTree = _.pick(found, bananaTreeProps)
+        t.deepEqual(JSON.stringify(bananaTree), JSON.stringify(foundBananaTree))
+
+        t.end()
+      })
+    })
+  })
+
 
   test('end', function (t) {
     t.end()

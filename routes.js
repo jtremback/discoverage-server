@@ -15,6 +15,7 @@ module.exports = function (app) {
   app.get('/animals/near', animals.near)
   app.get('/animals/:id', animals.getById)
   app.post('/animal/:id', users.auth, animals.update)
+  app.post('/animal', animals.save)
 
   app.get('/users', users.getAll)
   app.get('/users/:id', users.getById)
@@ -28,4 +29,5 @@ module.exports = function (app) {
   app.get('/bananatrees', bananaTrees.getAll)
   app.get('/bananatrees/near', bananaTrees.near)
   app.get('/bananatrees/:id', bananaTrees.getById)
+  app.post('/bananatree', bananaTrees.save)
 }
