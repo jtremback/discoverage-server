@@ -411,3 +411,77 @@
       __v: 0
   }]
   ```
+
+### update a bunch of shit at once
+
+- **POST** `/update`
+
+- **Body**
+  ```
+  {
+      "animals": [{
+          "_id": "550632455b692503008e659f",
+          "owner": "550648a8fa6b8286095dd5ce"
+      }],
+      "users": [{
+          "_id": "550648a8fa6b8286095dd5ce",
+          "bananaCount": 23
+      }],
+      "bananaPicks": [{
+          "bananaTree": "5399a1ae13a2d700003bded8",
+          "picker": "550648a8fa6b8286095dd5ce"
+      }],
+      "token": "8856562073342"
+  }
+  ```
+
+- **Response**
+  ```
+  {
+    "users": [
+      {
+        "_id": "550648a8fa6b8286095dd5ce",
+        "email": "jehan.tremback@gmail.com",
+        "name": "jehan",
+        "bananaCount": 23
+      }
+    ],
+    "animals": [
+      {
+        "_id": "550632455b692503008e659f",
+        "location": [
+          35.3343,
+          121.2223
+        ],
+        "owner": {
+          "_id": "550648a8fa6b8286095dd5ce",
+          "email": "jehan.tremback@gmail.com",
+          "name": "jehan",
+          "bananaCount": 23
+        },
+        "health": 9,
+        "sprite": "1_charizard",
+        "name": "Charizard"
+      }
+    ],
+    "bananaPicks": [
+      {
+        "bananaTree": {
+          "_id": "5399a1ae13a2d700003bded8",
+          "location": [
+            37.77777,
+            122.223333
+          ]
+        },
+        "picker": {
+          "_id": "550648a8fa6b8286095dd5ce",
+          "email": "jehan.tremback@gmail.com",
+          "name": "jehan",
+          "bananaCount": 23
+        },
+        "_id": "550b29c5c9bb1a0b64b7d015",
+        "timestamp": 1426794948560
+      }
+    ]
+  }
+  ```
