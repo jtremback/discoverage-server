@@ -7,15 +7,15 @@ var BananaPick = mongoose.model('BananaPick')
 var BananaTree = mongoose.model('BananaTree')
 var request = require('supertest')
 var _ = require('lodash')
+var async = require('async')
 
-mongoose.connection.on('open', function(){
-  mongoose.connection.db.executeDbCommand(
-    { dropDatabase: 1 },
-    function() {
-      // this gives it a chance to create the fake docs
-      setTimeout(tests, 1000)
-    }
-  )
+mongoose.connection.on('open', function() {
+  async.each([User, Animal, BananaPick, BananaTree], function (Model, callback) {
+    Model.remove({}, callback)
+  }, function() {
+    // this gives it a chance to create the fake docs
+    setTimeout(tests, 100)
+  })
 })
 
 function tests () {
@@ -110,11 +110,11 @@ function tests () {
       console.log('RES', res.body)
       t.equal(9, res.body.bananaCount)
 
-      Animal.findOne({ name: 'jehan' })
+      User.findOne({ name: 'jehan' })
       .exec(function (err, found) {
         console.log('FOUND', found)
 
-        t.equal(9, res.body.bananaCount)
+        t.equal(9, found.bananaCount)
 
         t.end()
       })
@@ -208,11 +208,11 @@ function tests () {
       console.log('RES', res.body)
       t.equal(9, res.body.health)
 
-      Animal.findOne({ name: 'Squirtle' })
+      Animal.findOne({ name: 'Charizard' })
       .exec(function (err, found) {
         console.log('FOUND', found)
 
-        t.equal(9, res.body.health)
+        t.equal(9, found.health)
 
         t.end()
       })
@@ -416,7 +416,7 @@ function tests () {
 
     request(app)
     .post('/bananatree')
-    .send(_.omit(bananaTree, 'bananaTreeCount'))
+    .send(bananaTree)
     .expect(200)
     .end(function(err, res){
       t.error(err)
@@ -436,6 +436,28 @@ function tests () {
       })
     })
   })
+
+
+
+  test('update a bunch of shit at once', function (t) {
+    var req = {
+      animals: [{ _id: '550632455b692503008e659f', owner: '550648a8fa6b8286095dd5ce' }],
+      users: [{ _id: '550648a8fa6b8286095dd5ce', bananaCount: 23 }],
+      bananaPicks: [{ bananaTree: '5399a1ae13a2d700003bded8', picker: '550648a8fa6b8286095dd5ce' }],
+      token: token
+    }
+
+    request(app)
+    .post('/update')
+    .send(req)
+    .expect(200)
+    .end(function (err, res) {
+      t.error(err)
+      console.log('RES', JSON.stringify(res.body,null,2))
+      t.end()
+    })
+  })
+
 
 
   test('end', function (t) {

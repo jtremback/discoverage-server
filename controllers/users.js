@@ -1,5 +1,6 @@
 var mongoose = require('mongoose')
 var User = mongoose.model('User')
+var sanitize = require('../sanitize.js')
 
 // Fake data
 User.findOneAndRemove({ _id: '550648a8fa6b8286095dd5ce' })
@@ -17,25 +18,25 @@ User.findOneAndRemove({ _id: '550648a8fa6b8286095dd5ce' })
 exports.getAll = function (req, res) {
   User.find(req.query)
   .exec(function (err, users) {
-    return res.json(users)
+    return res.json(sanitize(users))
   })
 }
 
 exports.getById = function (req, res) {
   User.findOne({ _id: req.params.id }, function (err, user) {
-    return res.json(user)
+    return res.json(sanitize(user))
   })
 }
 
-exports.update = function (req, res, next) {
-  if (!req.user) { return res.status(401).json({ code: 401, error: 'Please loge in.' }) }
-  if (req.user._id.toString() !== req.params.id) {
-    return res.status(403).json({ code: 403, error: 'You can only modify your own account.' })
+exports.update = function (user, id, doc, callback) {
+  if (!user) { return callback({ status: 401, message: 'Please log in.' })}
+  if (user._id.toString() !== id) {
+    return callback({ status: 403, message: 'You can only modify your own account.' })
   }
-  User.findOneAndUpdate({ _id: req.params.id }, req.body)
+  User.findOneAndUpdate({ _id: id }, doc)
   .exec(function (err, user) {
-    if (err) { return next(err) }
-    return res.json(user)
+    if (err) { return callback(err) }
+    return callback(null, user)
   })
 }
 
@@ -43,7 +44,7 @@ exports.save = function (req, res, next) {
   var user = new User(req.body)
   user.save(function (err, user) {
     if (err) { return next(err) }
-    return res.json(user)
+    return res.json(sanitize(user))
   })
 }
 

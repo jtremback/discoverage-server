@@ -1,5 +1,6 @@
 var mongoose = require('mongoose')
 var BananaPick = mongoose.model('BananaPick')
+var sanitize = require('../sanitize.js')
 
 // Fake data
 BananaPick.findOneAndRemove({ _id: '5399a1ae13a2d700003bded8' })
@@ -17,7 +18,7 @@ exports.getAll = function (req, res) {
   BananaPick.find(req.query)
   .populate(['bananaTree', 'picker'])
   .exec(function (err, bananaPicks) {
-    return res.json(bananaPicks)
+    return res.json(sanitize(bananaPicks))
   })
 }
 
@@ -25,22 +26,22 @@ exports.getById = function (req, res) {
   BananaPick.findOne({ _id: req.params.id })
   .populate(['bananaTree', 'picker'])
   .exec(function (err, bananaPick) {
-    return res.json(bananaPick)
+    return res.json(sanitize(bananaPick))
   })
 }
 
-exports.save = function (req, res, next) {
-  if (!req.user) { return res.status(401).json({ code: 401, error: 'Please log in.' })}
-  if (req.user._id.toString() !== req.body.picker) {
-    return res.status(403).json({ code: 403, error: 'You can pick your friends, and you can pick your bananas, but you can\'t pick your friend\'s bananas.' })
+exports.save = function (user, doc, callback) {
+  if (!user) { return callback({ status: 401, message: 'Please log in.' })}
+  if (user._id.toString() !== doc.picker) {
+    return callback({ status: 403, message: 'You can pick your friends, and you can pick your bananas, but you can\'t pick your friend\'s bananas.' })
   }
-  var bananaPick = new BananaPick(req.body)
+  var bananaPick = new BananaPick(doc)
   bananaPick.save(function (err, bananaPick) {
     BananaPick.findOne({ _id: bananaPick._id })
     .populate(['bananaTree', 'picker'])
     .exec(function (err, bananaPick) {
-      if (err) { return next(err) }
-      return res.json(bananaPick)
+      if (err) { return callback(err) }
+      return callback(null, bananaPick)
     })
   })
 }

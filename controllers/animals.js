@@ -1,5 +1,6 @@
 var mongoose = require('mongoose')
 var Animal = mongoose.model('Animal')
+var sanitize = require('../sanitize.js')
 
 // Fake data
 Animal.findOneAndRemove({ _id: '550632455b692503008e659f' })
@@ -20,7 +21,7 @@ exports.getAll = function (req, res, next) {
   .populate('owner')
   .exec(function (err, animals) {
     if (err) { return next(err) }
-    return res.json(animals)
+    return res.json(sanitize(animals))
   })
 }
 
@@ -29,7 +30,7 @@ exports.getById = function (req, res, next) {
   .populate('owner')
   .exec(function (err, animal) {
     if (err) { return next(err) }
-    return res.json(animal)
+    return res.json(sanitize(animal))
   })
 }
 
@@ -40,21 +41,21 @@ exports.save = function (req, res, next) {
     .populate('owner')
     .exec(function (err, animal) {
       if (err) { return next(err) }
-      return res.json(animal)
+      return res.json(sanitize(animal))
     })
   })
 }
 
-exports.update = function (req, res, next) {
-  if (!req.user) { return res.status(401).json({ code: 401, error: 'Please log in.' })}
-  Animal.findOneAndUpdate({ _id: req.params.id, owner: req.user._id.toString() }, req.body)
+exports.update = function (user, id, doc, callback) {
+  if (!user) { return callback({ status: 401, message: 'Please log in.' })}
+  Animal.findOneAndUpdate({ _id: id, owner: user._id.toString() }, doc)
   .populate('owner')
   .exec(function (err, animal) {
-    if (err) { return next(err) }
+    if (err) { return callback(err) }
     if (!animal) {
-      return res.status(403).json({ code: 403, error: 'You do not own an animal with that id.' })
+      return callback({ status: 403, message: 'You do not own an animal with that id.' })
     }
-    return res.json(animal)
+    return callback(null, animal)
   })
 }
 
@@ -70,6 +71,6 @@ exports.near = function (req, res, next) {
   .populate('owner')
   .exec(function (err, animals) {
     if (err) { return next(err) }
-    return res.json(animals)
+    return res.json(sanitize(animals))
   })
 }
