@@ -58,9 +58,12 @@ exports.login = function (req, res, next) {
     user.comparePassword(req.body.password, function (err, matches) {
       if (err) { return next(err) }
       if (!matches) { return res.status(401).json({ code: 401, error: 'Incorrect password.' }) }
-      var token = parseInt(Math.random() * 10000000000000) + ''
-      user.token = token
-      user.save()
+
+      if (!user.token || user.token.length === 0) {
+        var token = parseInt(Math.random() * 10000000000000) + ''
+        user.token = token
+        user.save()
+      }
 
       return res.json(user)
     })
