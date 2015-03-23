@@ -32,17 +32,17 @@ exports.save = function (req, res, next) {
   })
 }
 
-exports.near = function (req, res, next) {
-  var distance = parseFloat(req.query.dist) / 6371
+exports.near = function (query, callback) {
+  var distance = query.dist / 6371
   BananaTree.find({
       'location': {
-        $near: [req.query.lon, req.query.lat],
+        $near: [query.lon, query.lat],
         $maxDistance: distance
       }
     }
   )
-  .exec(function (err, docs) {
+  .exec(function (err, bananaTrees) {
     if (err) { return next(err) }
-    return res.json(docs)
+    return callback(null, bananaTrees)
   })
 }

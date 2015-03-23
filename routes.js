@@ -13,9 +13,20 @@ module.exports = function (app) {
   app.post('/login', users.login)
   app.get('/logout', users.logout)
   app.post('/update', users.auth, omnibus.updates)
+  app.get('/items/near', function (req, res, next) {
+    omnibus.near(req.query, function (err, animals) {
+      if (err) { return next(err) }
+      return res.json(animals)
+    })
+  })
 
   app.get('/animals', animals.getAll)
-  app.get('/animals/near', animals.near)
+  app.get('/animals/near', function (req, res, next) {
+    animals.near(req.query, function (err, animals) {
+      if (err) { return next(err) }
+      return res.json(animals)
+    })
+  })
   app.get('/animals/:id', animals.getById)
   app.post('/animal/:id', users.auth, function (req, res, next) {
     animals.update(req.user, req.params.id, req.body, function (err, animal) {
@@ -45,7 +56,12 @@ module.exports = function (app) {
   })
 
   app.get('/bananatrees', bananaTrees.getAll)
-  app.get('/bananatrees/near', bananaTrees.near)
+  app.get('/bananatrees/near', function (req, res, next) {
+    bananaTrees.near(req.query, function (err, bananaTrees) {
+      if (err) { return next(err) }
+      return res.json(bananaTrees)
+    })
+  })
   app.get('/bananatrees/:id', bananaTrees.getById)
   app.post('/bananatree', bananaTrees.save)
 }

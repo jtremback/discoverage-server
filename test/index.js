@@ -458,7 +458,24 @@ function tests () {
     })
   })
 
+  test('omnibus near', function (t) {
+    request(app)
+    .get('/items/near?lon=37&lat=122&dist=1000000')
+    .expect(200)
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+      var resBananaTree = _.pick(res.body.bananaTrees[0], bananaTreeProps)
 
+      t.deepEqual(resBananaTree, theBananaTree)
+
+      var resAnimal = _.pick(res.body.animals[0], animalProps)
+      resAnimal.health = 5
+      t.deepEqual(charizard, resAnimal)
+
+      t.end()
+    })
+  })
 
   test('end', function (t) {
     t.end()

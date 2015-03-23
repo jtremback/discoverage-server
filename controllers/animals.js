@@ -59,18 +59,18 @@ exports.update = function (user, id, doc, callback) {
   })
 }
 
-exports.near = function (req, res, next) {
-  var distance = req.query.dist / 6371
+exports.near = function (query, callback) {
+  var distance = query.dist / 6371
   Animal.find({
       'location': {
-        $near: [req.query.lon, req.query.lat],
+        $near: [query.lon, query.lat],
         $maxDistance: distance
       }
     }
   )
   .populate('owner')
   .exec(function (err, animals) {
-    if (err) { return next(err) }
-    return res.json(sanitize(animals))
+    if (err) { return callback(err) }
+    return callback(null, sanitize(animals))
   })
 }
