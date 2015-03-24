@@ -2,8 +2,10 @@ var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 
 var animalSchema = new Schema({
-  name: { type: [String], default: '' },
-  sprite: { type: [String], default: '' },
+  name: { type: String, default: '' },
+  sprite: { type: String, default: '' },
+  names: { type: [String], default: '' },
+  sprites: { type: [String], default: '' },
   health: { type: Number, default: '' },
   location: { type: [Number], index: '2d' },
   owner: { type: Schema.Types.ObjectId, ref: 'User' }
