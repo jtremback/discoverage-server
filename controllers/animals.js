@@ -1,6 +1,7 @@
 var mongoose = require('mongoose')
 var Animal = mongoose.model('Animal')
 var sanitize = require('../sanitize.js')
+var async = require('async')
 
 // Fake data
 Animal.findOneAndRemove({ _id: '550632455b692503008e659f' })
@@ -22,7 +23,7 @@ Animal.findOneAndRemove({ _id: '550632455b692503008e444f' })
     _id: '550632455b692503008e444f',
     name: 'Mangosteen',
     sprite: '3_mangosteen',
-    health: 5,
+    health: 9,
     location: [35.3345, 121.2210]
   })
   mangosteen.save()
@@ -34,9 +35,9 @@ Animal.findOneAndRemove({ _id: '550632455b692503008e222f' })
     _id: '550632455b692503008e222f',
     name: 'Bulbosaur',
     sprite: '3_bulbosaur',
-    health: 5,
+    health: 3,
     location: [35.3311, 121.2280],
-    owner: '550648a8fa6b8286095ee9ce'
+    owner: '550648a8fa6b8286095ww5ce'
   })
   mangosteen.save()
 })

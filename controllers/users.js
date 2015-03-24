@@ -1,6 +1,8 @@
 var mongoose = require('mongoose')
 var User = mongoose.model('User')
 var sanitize = require('../sanitize.js')
+var async = require('async')
+var Animal = mongoose.model('Animal')
 
 // Fake data
 User.findOneAndRemove({ _id: '550648a8fa6b8286095dd5ce' })
@@ -13,6 +15,18 @@ User.findOneAndRemove({ _id: '550648a8fa6b8286095dd5ce' })
     password: 'pokemon'
   })
   jehan.save()
+})
+
+User.findOneAndRemove({ _id: '550648a8fa6b8286095ww5ce' })
+.exec(function () {
+  var will = new User({
+    _id: '550648a8fa6b8286095ww5ce',
+    name: 'will',
+    email: 'wfw@gmail.com',
+    bananaCount: 2,
+    password: 'pokemon'
+  })
+  will.save()
 })
 
 exports.getAll = function (req, res) {
@@ -87,5 +101,35 @@ exports.logout = function (req, res, next) {
   .exec(function (err) {
     if (err) { return next(err) }
     return res.send('Logged out.')
+  })
+}
+
+exports.ranked = function (callback) {
+  Animal.aggregate([
+    {
+      $group: {
+        _id: '$owner',
+        totalHealth: {
+          $sum: '$health'
+        }
+      }
+    },
+    {
+      $match: {
+        _id: { $ne: null }
+      }
+    }
+  ], function (err, users) {
+    if (err) { return callback(err) }
+    async.map(
+      users,
+      function(result, cb) {
+        User.findById(result._id)
+        .exec(cb)
+      },
+      function(err, results) {
+        return callback(err, results)
+      }
+    )
   })
 }

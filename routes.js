@@ -37,6 +37,12 @@ module.exports = function (app) {
   app.post('/animal', animals.save)
 
   app.get('/users', users.getAll)
+  app.get('/users/ranked', function (req, res, next) {
+    users.ranked(function (err, users) {
+      if (err) { return next(err) }
+      res.json(sanitize(users))
+    })
+  })
   app.get('/users/:id', users.getById)
   app.post('/user/:id', users.auth, function (req, res, next) {
     users.update(req.user, req.params.id, req.body, function (err, user) {
