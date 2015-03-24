@@ -76,7 +76,7 @@ function tests () {
       name: 'aditya',
       email: 'adit99@gmail.com',
       password: 'pokemon',
-      bananaCount: 0
+      bananaCount: 5
     }
 
     request(app)
@@ -154,11 +154,11 @@ function tests () {
     .end(function(err, res){
       t.error(err)
       console.log('RES', res.body)
-      var resAnimal = _.pick(res.body[0], animalProps)
+      var resAnimal = _.pick(res.body[1], animalProps)
 
       t.deepEqual(charizard, resAnimal)
 
-      t.equal('550648a8fa6b8286095dd5ce', res.body[0].owner._id)
+      t.equal('550648a8fa6b8286095dd5ce', res.body[1].owner._id)
 
       t.end()
     })
@@ -198,7 +198,7 @@ function tests () {
     })
   })
 
-  test('update animal', function (t) {
+  test('update your animal', function (t) {
     request(app)
     .post('/animal/550632455b692503008e659f')
     .send({ health: 9, token: token })
@@ -216,6 +216,39 @@ function tests () {
 
         t.end()
       })
+    })
+  })
+
+  test('update unowned animal', function (t) {
+    request(app)
+    .post('/animal/550632455b692503008e444f')
+    .send({ health: 9, token: token })
+    .expect(200)
+    .end(function(err, res){
+      t.error(err)
+      console.log('RES', res.body)
+      t.equal(9, res.body.health)
+
+      Animal.findOne({ name: 'Mangosteen' })
+      .exec(function (err, found) {
+        console.log('FOUND', found)
+
+        t.equal(9, found.health)
+
+        t.end()
+      })
+    })
+  })
+
+  test('can\'t update other\'s animal', function (t) {
+    request(app)
+    .post('/animal/550632455b692503008e222f')
+    .send({ health: 9, token: token })
+    .expect(200)
+    .end(function(err, res){
+      console.log('RES', res.body)
+      t.ok(err)
+      t.end()
     })
   })
 
