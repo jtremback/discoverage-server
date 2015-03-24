@@ -154,8 +154,8 @@ function tests () {
 
   var charizard = {
     _id: '550632455b692503008e659f',
-    name: 'Charizard',
-    sprite: '1_charizard',
+    name: ['Charizard'],
+    sprite: ['1_charizard'],
     location: [35.3343, 121.2223],
     health: 5
   }
@@ -281,8 +281,8 @@ function tests () {
 
   test('save new animal', function (t) {
     var animal = {
-      name: 'Squirtle',
-      sprite: '1_squirtle',
+      name: ['Squirtle'],
+      sprite: ['1_squirtle'],
       health: 3,
       owner: '550648a8fa6b8286095dd5ce'
     }
