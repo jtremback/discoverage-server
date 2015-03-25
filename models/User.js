@@ -6,7 +6,7 @@ var SALT_WORK_FACTOR = 10
 var userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   name: { type: String, required: true, unique: true },
-  bananaCount: { type: Number, default: 5 },
+  bananaCount: { type: Number, default: 7 },
   password: { type: String, required: true },
   token: String
 })
