@@ -118,6 +118,11 @@ exports.ranked = function (callback) {
       $match: {
         _id: { $ne: null }
       }
+    },
+    {
+      $sort: {
+        totalHealth: 1
+      }
     }
   ], function (err, users) {
     if (err) { return callback(err) }
