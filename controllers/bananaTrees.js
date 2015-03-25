@@ -1,15 +1,20 @@
 var mongoose = require('mongoose')
 var BananaTree = mongoose.model('BananaTree')
 
+// var seeder = require('./seeder.js')
+// var bananaTrees = require('../data.json').bananaTrees
+// seeder(bananaTrees, BananaTree)
+
+
 // Fake data
-BananaTree.findOneAndRemove({ _id: '5399a1ae13a2d700003bded8' })
-.exec(function () {
-  var theBananaTree = new BananaTree({
-    _id: '5399a1ae13a2d700003bded8',
-    location: [ 37.77777, 122.223333 ]
-  })
-  theBananaTree.save()
-})
+// BananaTree.findOneAndRemove({ _id: '5399a1ae13a2d700003bded8' })
+// .exec(function () {
+//   var theBananaTree = new BananaTree({
+//     _id: '5399a1ae13a2d700003bded8',
+//     location: [ 37.77777, 122.223333 ]
+//   })
+//   theBananaTree.save()
+// })
 
 exports.getAll = function (req, res) {
   BananaTree.find(req.query)

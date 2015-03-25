@@ -5,6 +5,16 @@ var bananaTrees = require('./controllers/bananaTrees.js')
 var omnibus = require('./controllers/omnibus.js')
 var sanitize = require('./sanitize.js')
 
+var async = require('async')
+var mongoose = require('mongoose')
+var datagen = require('./datagen.js')
+var seeder = require('./seeder.js')
+
+var Animal = mongoose.model('Animal')
+var User = mongoose.model('User')
+var BananaTree = mongoose.model('BananaTree')
+var BananaPick = mongoose.model('BananaPick')
+
 module.exports = function (app) {
   app.get('/', function (req, res) {
     res.end('hello whirled')
@@ -70,4 +80,18 @@ module.exports = function (app) {
   })
   app.get('/bananatrees/:id', bananaTrees.getById)
   app.post('/bananatree', bananaTrees.save)
+
+  app.post('/seed', function (req, res, next) {
+    async.each([User, Animal, BananaPick, BananaTree], function (Model, callback) {
+      Model.remove({}, callback)
+    }, function (err) {
+      if (err) { next (err) }
+      var data = datagen()
+      seeder(data.animals, Animal)
+      seeder(data.bananaTrees, BananaTree)
+      seeder(data.users, User)
+
+      res.json(data)
+    })
+  })
 }

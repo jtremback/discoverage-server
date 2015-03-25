@@ -1,52 +1,55 @@
 var mongoose = require('mongoose')
 var Animal = mongoose.model('Animal')
 var sanitize = require('../sanitize.js')
-var async = require('async')
 
-// Fake data
-Animal.findOneAndRemove({ _id: '550632455b692503008e659f' })
-.exec(function () {
-  var charizard = new Animal({
-    _id: '550632455b692503008e659f',
-    name: 'Charizard',
-    sprite: '1_charizard',
-    names: ['Charizard'],
-    sprites: ['1_charizard'],
-    health: 5,
-    location: [35.3343, 121.2223],
-    owner: '550648a8fa6b8286095dd5ce'
-  })
-  charizard.save()
-})
+// var seeder = require('./seeder.js')
+// var animals = require('../data.json').animals
+// seeder(animals, Animal)
 
-Animal.findOneAndRemove({ _id: '550632455b692503008e444f' })
-.exec(function () {
-  var mangosteen = new Animal({
-    _id: '550632455b692503008e444f',
-    name: 'Mangosteen',
-    sprite: '3_mangosteen',
-    names: ['Mangosteen'],
-    sprites: ['3_mangosteen'],
-    health: 9,
-    location: [35.3345, 121.2210]
-  })
-  mangosteen.save()
-})
+// // Fake data
+// Animal.findOneAndRemove({ _id: '550632455b692503008e659f' })
+// .exec(function () {
+//   var charizard = new Animal({
+//     _id: '550632455b692503008e659f',
+//     name: 'Charizard',
+//     sprite: '1_charizard',
+//     names: ['Charizard'],
+//     sprites: ['1_charizard'],
+//     health: 5,
+//     location: [35.3343, 121.2223],
+//     owner: '550648a8fa6b8286095dd5ce'
+//   })
+//   charizard.save()
+// })
 
-Animal.findOneAndRemove({ _id: '550632455b692503008e222f' })
-.exec(function () {
-  var mangosteen = new Animal({
-    _id: '550632455b692503008e222f',
-    name: 'Bulbosaur',
-    sprite: '3_bulbosaur',
-    names: ['Bulbosaur'],
-    sprites: ['3_bulbosaur'],
-    health: 3,
-    location: [35.3311, 121.2280],
-    owner: '550648a8fa6b8286095ww5ce'
-  })
-  mangosteen.save()
-})
+// Animal.findOneAndRemove({ _id: '550632455b692503008e444f' })
+// .exec(function () {
+//   var mangosteen = new Animal({
+//     _id: '550632455b692503008e444f',
+//     name: 'Mangosteen',
+//     sprite: '3_mangosteen',
+//     names: ['Mangosteen'],
+//     sprites: ['3_mangosteen'],
+//     health: 9,
+//     location: [35.3345, 121.2210]
+//   })
+//   mangosteen.save()
+// })
+
+// Animal.findOneAndRemove({ _id: '550632455b692503008e222f' })
+// .exec(function () {
+//   var mangosteen = new Animal({
+//     _id: '550632455b692503008e222f',
+//     name: 'Bulbosaur',
+//     sprite: '3_bulbosaur',
+//     names: ['Bulbosaur'],
+//     sprites: ['3_bulbosaur'],
+//     health: 3,
+//     location: [35.3311, 121.2280],
+//     owner: '550648a8fa6b8286095ww5ce'
+//   })
+//   mangosteen.save()
+// })
 
 exports.getAll = function (req, res, next) {
   Animal.find(req.query)

@@ -4,30 +4,35 @@ var sanitize = require('../sanitize.js')
 var async = require('async')
 var Animal = mongoose.model('Animal')
 
-// Fake data
-User.findOneAndRemove({ _id: '550648a8fa6b8286095dd5ce' })
-.exec(function () {
-  var jehan = new User({
-    _id: '550648a8fa6b8286095dd5ce',
-    name: 'jehan',
-    email: 'jehan.tremback@gmail.com',
-    bananaCount: 5,
-    password: 'pokemon'
-  })
-  jehan.save()
-})
+// var seeder = require('./seeder.js')
+// var users = require('../data.json').users
+// seeder(users, User)
 
-User.findOneAndRemove({ _id: '550648a8fa6b8286095ww5ce' })
-.exec(function () {
-  var will = new User({
-    _id: '550648a8fa6b8286095ww5ce',
-    name: 'will',
-    email: 'wfw@gmail.com',
-    bananaCount: 2,
-    password: 'pokemon'
-  })
-  will.save()
-})
+
+// // Fake data
+// User.findOneAndRemove({ _id: '550648a8fa6b8286095dd5ce' })
+// .exec(function () {
+//   var jehan = new User({
+//     _id: '550648a8fa6b8286095dd5ce',
+//     name: 'jehan',
+//     email: 'jehan.tremback@gmail.com',
+//     bananaCount: 5,
+//     password: 'pokemon'
+//   })
+//   jehan.save()
+// })
+
+// User.findOneAndRemove({ _id: '550648a8fa6b8286095ww5ce' })
+// .exec(function () {
+//   var will = new User({
+//     _id: '550648a8fa6b8286095ww5ce',
+//     name: 'will',
+//     email: 'wfw@gmail.com',
+//     bananaCount: 2,
+//     password: 'pokemon'
+//   })
+//   will.save()
+// })
 
 exports.getAll = function (req, res) {
   User.find(req.query)
@@ -121,7 +126,7 @@ exports.ranked = function (callback) {
     },
     {
       $sort: {
-        totalHealth: 1
+        totalHealth: -1
       }
     }
   ], function (err, users) {
