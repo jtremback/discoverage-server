@@ -18,7 +18,7 @@ exports.getAll = function (req, res) {
   BananaPick.find(req.query)
   .populate(['bananaTree', 'picker'])
   .exec(function (err, bananaPicks) {
-    return res.json(sanitize(bananaPicks))
+    return res.json(null)
   })
 }
 

@@ -9,6 +9,7 @@ var async = require('async')
 var mongoose = require('mongoose')
 var datagen = require('./datagen.js')
 var seeder = require('./seeder.js')
+var fs = require('fs')
 
 var Animal = mongoose.model('Animal')
 var User = mongoose.model('User')
@@ -85,13 +86,17 @@ module.exports = function (app) {
     async.each([User, Animal, BananaPick, BananaTree], function (Model, callback) {
       Model.remove({}, callback)
     }, function (err) {
-      if (err) { next (err) }
-      var data = datagen()
-      seeder(data.animals, Animal)
-      seeder(data.bananaTrees, BananaTree)
-      seeder(data.users, User)
+      if (err) { next(err) }
+      fs.readFile('./data.json', function (err, data) {
+        if (err) { next(err) }
+        data = JSON.parse(data)
+        seeder(data.animals, Animal)
+        seeder(data.bananaTrees, BananaTree)
+        seeder(data.users, User)
 
-      res.json(data)
+        res.json(data)
+      })
+      // var data = datagen()
     })
   })
 }
